@@ -1,85 +1,212 @@
 /**
- * Created by CAEADOM on 6/19/14.
+ * Author: Earl Dombowsky
+ * Written: 2014.06.20
+ *
+ * Compilation: javac Percolation.java
+ * Execution: java Percolation 100
+ *
+ * Implements percolation simulation for an N x N site matrix using weighted
+ * quick union algorithm from algs4.jar library.
+ *
+ * Main method implements a small unit test. Argument must be provided to
+ * define the size of the matrix to be used (N).
  */
 public class Percolation {
     private boolean[][] field;
     private int[][] intfield;
-    private int size;
+    private int gridSize;
     private WeightedQuickUnionUF connectionSolver;
 
-    // create N-by-N grid, with all sites blocked
+
+    /**
+     * Creates an N-by-N grid, with all sites blocked
+     *
+     * @param N
+     */
     public Percolation(int N) {
-        size = N;
+        if (N <= 0) throw new IllegalArgumentException("gridSize must be > 0");
+
+        gridSize = N;
         field = new boolean[N][N];
         intfield = new int[N][N];
-        connectionSolver = new WeightedQuickUnionUF((size*size) + 2);
+        connectionSolver = new WeightedQuickUnionUF((gridSize * gridSize) + 2);
         createField();
     }
 
-    private boolean isOutOfBounds(int index) {
-        return (index <= 0 || index > size);
-    }
-
-    private void createField() {
-        int index = 0;
-        for (int i = 0; i < size; i++)
-            for (int j = 0; j < size; j++) {
-                field[i][j] = false;
-                intfield[i][j] = index++;
-            }
-        createVirtualRoots();
-    }
-
-    private void createVirtualRoots() {
-        for (int i = 0; i < size; i++) {
-            connectionSolver.union(intfield[0][i], size*size);
-            connectionSolver.union(intfield[size - 1][i], (size*size) + 1);
+    /**
+     *
+     * @param index
+     */
+    private void validateIndices(int i, int j) {
+        if (i <= 0 || i > gridSize) {
+            throw new IndexOutOfBoundsException("row index i out of bounds");
+        }
+        if (j <= 0 || j > gridSize) {
+            throw new IndexOutOfBoundsException("column index j out of bounds");
         }
     }
 
-    // open site (row i, column j) if it is not already
+
+    /**
+     *
+     */
+    private void createField() {
+        int index = 0;
+
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j < gridSize; j++) {
+                field[i][j] = false;
+                intfield[i][j] = index++;
+            }
+        }
+
+        createVirtualRoots();
+    }
+
+    /**
+     *
+     */
+    private void createVirtualRoots() {
+        for (int i = 0; i < gridSize; i++) {
+            connectionSolver.union(intfield[0][i], gridSize * gridSize);
+            connectionSolver.union(intfield[gridSize - 1][i], (gridSize * gridSize) + 1);
+        }
+    }
+
+    /**
+     * Open site (row i, column j) if it is not already
+     *
+     * @param i
+     * @param j
+     */
     public void open(int i, int j) {
-        if (isOutOfBounds(i)) throw new IndexOutOfBoundsException("row index i is out of bounds");
-        if (isOutOfBounds(j)) throw new IndexOutOfBoundsException("row index j is out of bounds");
+        validateIndices(i, j);
 
         field[i - 1][j - 1] = true;
         int k = i - 1;
         int l = j - 1;
-        if (k - 1 >= 0 && field[k - 1][l])
+        if (k - 1 >= 0 && field[k - 1][l]) {
             connectionSolver.union(intfield[k - 1][l], intfield[k][l]);
+        }
 
-        if (k + 1 < size && field[k + 1][l])
+        if (k + 1 < gridSize && field[k + 1][l]) {
             connectionSolver.union(intfield[k + 1][l], intfield[k][l]);
+        }
 
-        if (l - 1 >= 0 && field[k][l - 1])
+        if (l - 1 >= 0 && field[k][l - 1]) {
             connectionSolver.union(intfield[k][l - 1], intfield[k][l]);
+        }
 
-        if (l + 1 < size && field[k][l + 1])
+        if (l + 1 < gridSize && field[k][l + 1]) {
             connectionSolver.union(intfield[k][l + 1], intfield[k][l]);
+        }
+
+        if (percolates()) {
+            System.out.println("It percolates");
+        }
+        else {
+            System.out.println("Does not percolate");
+        }
+        printArray(field);
     }
-    // is site (row i, column j) open?
+
+
+    /**
+     * Is site (row i, column j) open?
+     *
+     * @param i
+     * @param j
+     * @return
+     */
     public boolean isOpen(int i, int j) {
-        if (isOutOfBounds(i)) throw new IndexOutOfBoundsException("row index i is out of bounds");
-        if (isOutOfBounds(j)) throw new IndexOutOfBoundsException("row index j is out of bounds");
+        validateIndices(i, j);
 
         return field[i-1][j-1];
     }
 
-    // is site (row i, column j) full?
+    /**
+     * Is site (row i, column j) full?
+     *
+     * @param i
+     * @param j
+     * @return
+     */
     public boolean isFull(int i, int j) {
-        if (isOutOfBounds(i)) throw new IndexOutOfBoundsException("row index i is out of bounds");
-        if (isOutOfBounds(j)) throw new IndexOutOfBoundsException("row index j is out of bounds");
+        validateIndices(i, j);
 
-        if (connectionSolver.connected(intfield[i-1][j-1], size*size) && isOpen(i, j))
+        if (connectionSolver.connected(intfield[i-1][j-1], gridSize * gridSize) && isOpen(i, j)) {
             return true;
+        }
 
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean percolates() {
         // does the system percolate?
-        if (size == 1)
+        if (gridSize == 1) {
             return isOpen(1, 1);
-        return connectionSolver.connected(size*size, size*size + 1);
+        }
+
+        return connectionSolver.connected(gridSize * gridSize, gridSize * gridSize + 1);
+    }
+
+
+    /**
+     * Print out matrix
+     *
+     * @param arr
+     */
+    private void printArray(boolean[][] arr)
+    {
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr.length; j++) {
+                if (arr[i][j] == false) {
+                    System.out.print(" 0 ");
+                }
+                else {
+                    System.out.print(" X ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Unit test.
+     *
+     * @param args number of elements (N) in NxN matrix to use in test simulation
+     *
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
+        if (args.length < 1) {
+            throw new Exception("Provide N as the first argument!");
+        }
+
+        int N = Integer.parseInt(args[0]);
+        Percolation percolation = new Percolation(N);
+        int midCol = N / 2;
+
+        for (int i = 1; i <= N; i++) {
+            percolation.open(i, midCol);
+        }
+
+        if (!percolation.isOpen(N/2, midCol)) {
+            throw new Exception("Test failed! Site should be opened!");
+        }
+
+        if (!percolation.isFull(N/2, midCol)) {
+            throw new Exception("Test failed! Site should be full!");
+        }
+
+        if (!percolation.percolates()) {
+            throw new Exception("Test failed! System should percolate!");
+        }
+
+        System.out.println("Test status: success!");
     }
 }
