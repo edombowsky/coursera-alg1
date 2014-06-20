@@ -1,4 +1,5 @@
 /**
+ *
  * Author: Earl Dombowsky
  * Written: 2014.06.20
  *
@@ -12,7 +13,9 @@
  * and standard deviation.
  *
  */
-public class PercolationStats {
+
+public class PercolationStats
+{
     private double[] results;           // Contains computer thresholds for T iterations
     private double   mean;              // Computed mean value for the results array
     private double   stddev;            // Computed standard dev. for the results array
@@ -25,8 +28,10 @@ public class PercolationStats {
      * @param N size of the matrix to be used
      * @param T the number of times to run the simulation
      */
-    public PercolationStats(int N, int T) {
-        if (N <= 0 || T <= 0) {
+    public PercolationStats(int N, int T)
+    {
+        if (N <= 0 || T <= 0)
+        {
             throw new IllegalArgumentException("N="+N+" T="+T);
         }
 
@@ -36,7 +41,8 @@ public class PercolationStats {
         int openSiteCounter = 0;
 
         // Repeat simulation T times
-        for (int i = 0; i < T; i++) {
+        for (int i = 0; i < T; i++)
+        {
             openSiteCounter = 0;
             Percolation percolation = new Percolation(N);
 
@@ -47,7 +53,8 @@ public class PercolationStats {
                 col = StdRandom.uniform(1, N + 1);
 
                 // Open site if not already opened
-                if (!percolation.isOpen(row, col)) {
+                if (!percolation.isOpen(row, col))
+                {
                     percolation.open(row, col);
                     ++openSiteCounter;
                 }
@@ -69,28 +76,32 @@ public class PercolationStats {
     /**
      * @return sample mean of percolation threshold
      */
-    public double mean() {
+    public double mean()
+    {
         return mean;
     }
 
     /**
      * @return sample standard deviation of percolation threshold
      */
-    public double stddev() {
+    public double stddev()
+    {
         return stddev;
     }
 
     /**
      * @return lower bound of the 95% confidence interval
      */
-    public double confidenceLo() {
+    public double confidenceLo()
+    {
         return confidenceLow;
     }
 
     /**
      * @return upper bound of the 95% confidence interval
      */
-    public double confidenceHi() {
+    public double confidenceHi()
+    {
         return confidenceHigh;
     }
 
@@ -119,9 +130,11 @@ public class PercolationStats {
      *
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         // TODO implement
-        if (args.length != 2) {
+        if (args.length != 2)
+        {
             throw new IllegalArgumentException("Provide 2 arguments: main(T,N)=>"
                     + "(T=num iterations, N=num elements)");
         }
