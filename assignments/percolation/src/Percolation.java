@@ -16,11 +16,13 @@
 
 public class Percolation
 {
-    private boolean[][] field;
-    private int[][] intfield;
-    private int gridSize;
-    private WeightedQuickUnionUF connectionSolver;
-
+    private final int N;
+    private final int size;
+    private final int virtualTop;
+    private final int virtualBottom;;
+    private final boolean[][] opened;
+    private final WeightedQuickUnionUF ufTop;
+    private final WeightedQuickUnionUF ufBottom;
 
     /**
      * Creates an N-by-N grid, with all sites blocked
@@ -29,13 +31,18 @@ public class Percolation
      */
     public Percolation(int N)
     {
-        if (N <= 0) throw new IllegalArgumentException("gridSize must be > 0");
+        if (N <= 0) throw new IllegalArgumentException("gridSize (N) must be > 0");
 
-        gridSize = N;
-        field = new boolean[N][N];
-        intfield = new int[N][N];
-        connectionSolver = new WeightedQuickUnionUF((gridSize * gridSize) + 2);
-        createField();
+        this.N    = N;
+        this.size = (N * N) + 2;
+
+        this.virtualTop    = 0;
+        this.virtualBottom = size - 1;
+
+        this.ufTop    = new WeightedQuickUnionUF(size);
+        this.ufBottom = new WeightedQuickUnionUF(size);
+
+        this.opened = new boolean[N + 1][N + 1];
     }
 
     /**
@@ -47,45 +54,13 @@ public class Percolation
      */
     private void validateIndices(int i, int j)
     {
-        if (i <= 0 || i > gridSize)
+        if (i <= 0 || i > N)
         {
             throw new IndexOutOfBoundsException("row index i out of bounds");
         }
-        if (j <= 0 || j > gridSize)
+        if (j <= 0 || j > N)
         {
             throw new IndexOutOfBoundsException("column index j out of bounds");
-        }
-    }
-
-
-    /**
-     *
-     */
-    private void createField()
-    {
-        int index = 0;
-
-        for (int i = 0; i < gridSize; i++)
-        {
-            for (int j = 0; j < gridSize; j++)
-            {
-                field[i][j] = false;
-                intfield[i][j] = index++;
-            }
-        }
-
-        createVirtualRoots();
-    }
-
-    /**
-     *
-     */
-    private void createVirtualRoots()
-    {
-        for (int i = 0; i < gridSize; i++)
-        {
-            connectionSolver.union(intfield[0][i], gridSize * gridSize);
-            connectionSolver.union(intfield[gridSize - 1][i], (gridSize * gridSize) + 1);
         }
     }
 
@@ -99,38 +74,51 @@ public class Percolation
     {
         validateIndices(i, j);
 
-        field[i - 1][j - 1] = true;
-        int k = i - 1;
-        int l = j - 1;
-        if (k - 1 >= 0 && field[k - 1][l])
+        if (!opened[i][j])
         {
-            connectionSolver.union(intfield[k - 1][l], intfield[k][l]);
-        }
+            opened[i][j] = true;
 
-        if (k + 1 < gridSize && field[k + 1][l])
-        {
-            connectionSolver.union(intfield[k + 1][l], intfield[k][l]);
-        }
+            if ((i - 1 > 0) && opened[i - 1][j])
+            {
+                ufTop.union(xyTo1D(i, j), xyTo1D(i - 1, j));
+                ufBottom.union(xyTo1D(i, j), xyTo1D(i - 1, j));
+            }
 
-        if (l - 1 >= 0 && field[k][l - 1])
-        {
-            connectionSolver.union(intfield[k][l - 1], intfield[k][l]);
-        }
+            if ((i + 1 <= N) && opened[i + 1][j])
+            {
+                ufTop.union(xyTo1D(i, j), xyTo1D(i + 1, j));
+                ufBottom.union(xyTo1D(i, j), xyTo1D(i + 1, j));
+            }
 
-        if (l + 1 < gridSize && field[k][l + 1])
-        {
-            connectionSolver.union(intfield[k][l + 1], intfield[k][l]);
-        }
+            if ((j - 1 > 0) && opened[i][j - 1])
+            {
+                ufTop.union(xyTo1D(i, j), xyTo1D(i, j - 1));
+                ufBottom.union(xyTo1D(i, j), xyTo1D(i, j - 1));
+            }
 
+            if ((j + 1 <= N) && opened[i][j + 1])
+            {
+                ufTop.union(xyTo1D(i, j), xyTo1D(i, j + 1));
+                ufBottom.union(xyTo1D(i, j), xyTo1D(i, j + 1));
+            }
+
+            if (i == 1)
+            {
+                ufTop.union(xyTo1D(i, j), virtualTop);
+                ufBottom.union(xyTo1D(i, j), virtualTop);
+            }
+            if (i == N)
+                ufBottom.union(xyTo1D(i, j), virtualBottom);
+        }
         // Debugging
-        if (percolates())
-        {
-            System.out.println("It percolates");
-        }
-        else
-        {
-            System.out.println("Does not percolate");
-        }
+//        if (percolates())
+//        {
+//            System.out.println("It percolates");
+//        }
+//        else
+//        {
+//            System.out.println("Does not percolate");
+//        }
 
 //        printArray(field);
     }
@@ -147,7 +135,7 @@ public class Percolation
     {
         validateIndices(i, j);
 
-        return field[i-1][j-1];
+        return opened[i][j];
     }
 
     /**
@@ -161,9 +149,9 @@ public class Percolation
     {
         validateIndices(i, j);
 
-        if (connectionSolver.connected(intfield[i-1][j-1], gridSize * gridSize) && isOpen(i, j))
+        if (opened[i][j])
         {
-            return true;
+            return ufTop.connected(xyTo1D(i, j), virtualTop);
         }
 
         return false;
@@ -175,13 +163,7 @@ public class Percolation
      */
     public boolean percolates()
     {
-        // does the system percolate?
-        if (gridSize == 1)
-        {
-            return isOpen(1, 1);
-        }
-
-        return connectionSolver.connected(gridSize * gridSize, gridSize * gridSize + 1);
+        return ufBottom.connected(virtualTop, virtualBottom);
     }
 
 
@@ -207,6 +189,11 @@ public class Percolation
             }
             System.out.println();
         }
+    }
+
+    private int xyTo1D(int i, int j)
+    {
+        return (i - 1) * N + j;
     }
 
     /**
