@@ -23,7 +23,7 @@ public class PercolationStats
     private double   confidenceHigh;    // 95% confidence value higher bound
 
     /**
-     * perform T independent computational experiments on an N-by-N grid
+     * Perform T independent computational experiments on an N-by-N grid
      *
      * @param N size of the matrix to be used
      * @param T the number of times to run the simulation
@@ -74,6 +74,8 @@ public class PercolationStats
     }
 
     /**
+     * Calculates mean of percolation threshold
+     *
      * @return sample mean of percolation threshold
      */
     public double mean()
@@ -82,6 +84,8 @@ public class PercolationStats
     }
 
     /**
+     * Calculates lower bound of 95% confidence interval for the percolation threshold
+     *
      * @return sample standard deviation of percolation threshold
      */
     public double stddev()
@@ -98,6 +102,8 @@ public class PercolationStats
     }
 
     /**
+     * Calculates upper bound of 95% confidence interval for the percolation threshold
+     *
      * @return upper bound of the 95% confidence interval
      */
     public double confidenceHi()

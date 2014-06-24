@@ -3,7 +3,7 @@
  * Author: Earl Dombowsky
  * Written: 2014.06.20
  *
- * Compilation: javac Percolation.java
+ * Compilation: javac Percolation.java'
  * Execution: java Percolation 100
  *
  * Implements percolation simulation for an N x N site matrix using weighted
