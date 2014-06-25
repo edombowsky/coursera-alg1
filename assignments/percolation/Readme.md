@@ -1,6 +1,6 @@
 ## Programming Assignment 1: Percolation
 
-{ \mu =  \frac{ x_{1} + x_{2} + ... + x_{T} }{T} }
+{$ \mu =  \frac{ x_{1} + x_{2} + ... + x_{T} }{T} $}
  
 Write a program to estimate the value of the *percolation threshold* via Monte Carlo simulation.
 
