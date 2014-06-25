@@ -29,8 +29,8 @@ By convention, the indices *i* and *j* are integers between 1 and *N*, where (1,
 
 - Initialize all sites to be blocked.
 - Repeat the following until the system percolates:
- -- Choose a site (row *i*, column *j*) uniformly at random among all blocked sites.
- -- Open the site (row *i*, column *j*). 
+  - Choose a site (row *i*, column *j*) uniformly at random among all blocked sites.
+  - Open the site (row *i*, column *j*). 
 - The fraction of sites that are opened when the system percolates provides an estimate of the percolation threshold. 
 For example, if sites are opened in a 20-by-20 lattice according to the snapshots below, then our estimate of the percolation threshold is 204/400 = 0.51 because the system percolates when the 204th site is opened.
 
