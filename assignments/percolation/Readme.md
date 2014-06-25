@@ -8,8 +8,7 @@ Write a program to estimate the value of the *percolation threshold* via Monte C
 
 Percolates
 
-**The problem.** In a famous scientific problem, researchers are interested in the following question: if sites are independently set to be open with probability *p* (and therefore blocked with probability 1 − *p*), what is the probability that the system percolates? When *p* equals 0, the system does not percolate; when *p* equals 1, the system percolates. The plots below show the site vacancy probability *p* versus the percolation probability for 20-by-20 random grid (left) and 100-by-100 random grid (right).
-
+**The problem.** In a famous scientific problem, researchers are interested in the following question: if sites are independently set to be open with probability *p*^*^ (and therefore blocked with probability 1 − *p*), what is the probability that the system percolates? When *p* equals 0, the system does not percolate; when *p* equals 1, the system percolates. 
 
 When *N* is sufficiently large, there is a *threshold* value *p*<sup>*</sup> such that when *p* < *p*<sup>*</sup> a random N-by-N grid almost never percolates, and when *p* > *p*<sup>*</sup>, a random *N*-by-*N* grid almost always percolates. No mathematical solution for determining the percolation threshold *p* has yet been derived. Your task is to write a computer program to estimate *p*<sup>*</sup>.
 
