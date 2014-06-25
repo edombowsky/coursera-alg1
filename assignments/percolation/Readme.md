@@ -10,7 +10,6 @@ Percolates
 
 **The problem.** In a famous scientific problem, researchers are interested in the following question: if sites are independently set to be open with probability *p* (and therefore blocked with probability 1 − *p*), what is the probability that the system percolates? When *p* equals 0, the system does not percolate; when *p* equals 1, the system percolates. The plots below show the site vacancy probability *p* versus the percolation probability for 20-by-20 random grid (left) and 100-by-100 random grid (right).
 
-http://coursera.cs.princeton.edu/algs4/assignments/percolation-threshold20.png
 
 When *N* is sufficiently large, there is a *threshold* value *p*<sup>*</sup> such that when *p* < *p*<sup>*</sup> a random N-by-N grid almost never percolates, and when *p* > *p*<sup>*</sup>, a random *N*-by-*N* grid almost always percolates. No mathematical solution for determining the percolation threshold *p* has yet been derived. Your task is to write a computer program to estimate *p*<sup>*</sup>.
 
@@ -30,8 +29,8 @@ By convention, the indices *i* and *j* are integers between 1 and *N*, where (1,
 
 - Initialize all sites to be blocked.
 - Repeat the following until the system percolates:
--- Choose a site (row *i*, column *j*) uniformly at random among all blocked sites.
--- Open the site (row *i*, column *j*). 
+ -- Choose a site (row *i*, column *j*) uniformly at random among all blocked sites.
+ -- Open the site (row *i*, column *j*). 
 - The fraction of sites that are opened when the system percolates provides an estimate of the percolation threshold. 
 For example, if sites are opened in a 20-by-20 lattice according to the snapshots below, then our estimate of the percolation threshold is 204/400 = 0.51 because the system percolates when the 204th site is opened.
 
