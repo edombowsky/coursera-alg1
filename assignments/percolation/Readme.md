@@ -1,5 +1,7 @@
 ## Programming Assignment 1: Percolation
 
+{ \mu =  \frac{ x_{1} + x_{2} + ... + x_{T} }{T} }
+ 
 Write a program to estimate the value of the *percolation threshold* via Monte Carlo simulation.
 
 **Percolation.** Given a composite systems comprised of randomly distributed insulating and metallic materials: what fraction of the materials need to be metallic so that the composite system is an electrical conductor? Given a porous landscape with water on the surface (or oil below), under what conditions will the water be able to drain through to the bottom (or the oil to gush through to the surface)? Scientists have defined an abstract process known as percolation to model such situations.
@@ -8,7 +10,7 @@ Write a program to estimate the value of the *percolation threshold* via Monte C
 
 Percolates
 
-**The problem.** In a famous scientific problem, researchers are interested in the following question: if sites are independently set to be open with probability *p*^*^ (and therefore blocked with probability 1 − *p*), what is the probability that the system percolates? When *p* equals 0, the system does not percolate; when *p* equals 1, the system percolates. 
+**The problem.** In a famous scientific problem, researchers are interested in the following question: if sites are independently set to be open with probability *p* <sup>*</sup> (and therefore blocked with probability 1 − *p*), what is the probability that the system percolates? When *p* equals 0, the system does not percolate; when *p* equals 1, the system percolates. 
 
 When *N* is sufficiently large, there is a *threshold* value *p*<sup>*</sup> such that when *p* < *p*<sup>*</sup> a random N-by-N grid almost never percolates, and when *p* > *p*<sup>*</sup>, a random *N*-by-*N* grid almost always percolates. No mathematical solution for determining the percolation threshold *p* has yet been derived. Your task is to write a computer program to estimate *p*<sup>*</sup>.
 
