@@ -28,7 +28,7 @@ public class Deque<Item> implements Iterable<Item>
      */
     public boolean isEmpty()
     {
-        // TODO: implment this
+        // TODO: implement this
 
         return deque.isEmpty();
     }
@@ -159,7 +159,6 @@ public class Deque<Item> implements Iterable<Item>
             @Override
             public void remove()
             {
-                // Unsupported method
                 //
                 //        ______________
                 //       /.--------------.\
