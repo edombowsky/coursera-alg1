@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -9,6 +11,8 @@ import java.util.NoSuchElementException;
  */
 public class Deque<Item> implements Iterable<Item>
 {
+    private List<Item> deque = new ArrayList<Item>();
+
     /**
      * Constructs an empty deque
      */
@@ -26,19 +30,19 @@ public class Deque<Item> implements Iterable<Item>
     {
         // TODO: implment this
 
-        return false;
+        return deque.isEmpty();
     }
 
     /**
-     * Return the number of items on the deque
+     * Return the number of items in the deque
      *
-     * @return the number of items on the deque
+     * @return the number of items in the deque
      */
     public int size()
     {
         // TODO: implement this
 
-        return 0;
+        return deque.size();
     }
 
     /**
@@ -48,12 +52,16 @@ public class Deque<Item> implements Iterable<Item>
      */
     public void addFirst(Item item)
     {
+        // TODO: implement this
         if (item == null)
         {
             throw new NullPointerException("cannot enqueue null items");
         }
 
-        // TODO: implement this
+        System.out.println("adding at front: " + item);
+        deque.add(0, item);
+
+        System.out.println(deque);
     }
 
     /**
@@ -63,12 +71,15 @@ public class Deque<Item> implements Iterable<Item>
      */
     public void addLast(Item item)
     {
+        // TODO: implement this
         if (item == null)
         {
             throw new NullPointerException("cannot enqueue null items");
         }
 
-        // TODO: implement this
+        System.out.println("adding at rear: " + item);
+        deque.add(item);
+        System.out.println(deque);
     }
 
     /**
@@ -78,14 +89,20 @@ public class Deque<Item> implements Iterable<Item>
      */
     public Item removeFirst()
     {
-        if (this.isEmpty())
-        {
-            throw new NoSuchElementException("cannot dequeue from an empty queue");
-        }
-
         // TODO: implement this
 
-        return null;
+        if (deque.isEmpty())
+        {
+            throw new NoSuchElementException("Deque underflow!! unable to remove.");
+        }
+
+        // remove an item from the beginning of the queue
+        Item rem = deque.remove(0);
+
+        System.out.println("removed from front: " + rem);
+        System.out.println(deque);
+
+        return rem;
     }
 
     /**
@@ -95,14 +112,19 @@ public class Deque<Item> implements Iterable<Item>
      */
     public Item removeLast()
     {
-        if (this.isEmpty())
+        // TODO: implement this
+        if (deque.isEmpty())
         {
-            throw new NoSuchElementException("cannot dequeue from an empty queue");
+            throw new NoSuchElementException("Deque underflow!! unable to remove.");
         }
 
-        // TODO: implement this
+        // remove an item from the beginning of the queue
+        Item rem = deque.remove(deque.size() - 1);
 
-        return null;
+        System.out.println("removed from front: " + rem);
+        System.out.println(deque);
+
+        return rem;
     }
 
     /**
@@ -137,6 +159,28 @@ public class Deque<Item> implements Iterable<Item>
             @Override
             public void remove()
             {
+                // Unsupported method
+                //
+                //        ______________
+                //       /.--------------.\
+                //      //                \\
+                //     //                  \\
+                //    || .-..----. .-. .--. ||
+                //    ||( ( '-..-'|.-.||.-.|||
+                //    || \ \  ||  || ||||_||||
+                //    ||._) ) ||  \'-'/||-' ||
+                //     \\'-'  `'   `-' `'  //
+                //      \\                //
+                //       \\______________//
+                //        '--------------'
+                //              |_|_
+                //       ____ _/ _)_)
+                //           '  | (_)
+                //        .--'"\| ()
+                //              | |
+                //              | |
+                //              |_|
+
                 // TODO Auto-generated method stub
                 throw new UnsupportedOperationException("unsupported action");
             }
@@ -153,5 +197,35 @@ public class Deque<Item> implements Iterable<Item>
     public static void main(String[] args)
     {
         // TODO: implement this
+        Deque<Integer> deque = new Deque();
+
+        try
+        {
+            deque.addFirst(34);
+            deque.addLast(45);
+            deque.addLast(null);
+            deque.removeFirst();
+            deque.removeFirst();
+            if (deque.isEmpty()) System.out.println("is empty");
+            deque.removeFirst();
+            deque.addFirst(21);
+            deque.addFirst(98);
+            deque.addLast(5);
+            deque.addFirst(43);
+            deque.removeLast();
+            System.out.println("Size of queue = " + deque.size());
+        }
+        catch (UnsupportedOperationException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (NoSuchElementException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (NullPointerException e)
+        {
+            System.out.println(e.getMessage());
+        }
     }
 }
