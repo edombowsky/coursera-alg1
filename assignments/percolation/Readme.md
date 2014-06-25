@@ -32,21 +32,17 @@ By convention, the indices *i* and *j* are integers between 1 and *N*, where (1,
 
 For example, if sites are opened in a 20-by-20 lattice, then our estimate of the percolation threshold is 204/400 = 0.51 because the system percolates when the 204th site is opened.
 
-By repeating this computation experiment *T* times and averaging the results, we obtain a more accurate estimate of the percolation threshold. Let xt be the fraction of open sites in computational experiment t. The sample mean μ provides an estimate of the percolation threshold; the sample standard deviation σ measures the sharpness of the threshold.
+By repeating this computation experiment *T* times and averaging the results, we obtain a more accurate estimate of the percolation threshold. Let x<sup>t</sup> be the fraction of open sites in computational experiment *t*. The sample mean μ provides an estimate of the percolation threshold; the sample standard deviation σ measures the sharpness of the threshold.
 ```
-     x<sub>1</sub> + x<sub>2</sub> + ... + x<sub>T</sub>
-mu = ---------------------------------------------------
-                         T
-                         
-                (x<sub>1</sub> - mu)<sup>2</sup> + (x<sub>2</sub> - mu)<sup>2</sup> + ... + (x<sub>T</sub> - mu)<sup>2</sup>
-σ<sup>2</sup> = -----------------------------------------------------------------------------------------------
-                                                T - 1
+     x1 + x2 + ... + xT            (x1 - μ)^2 + (x2 - μ)^2 + ... + (xT - μ)^2
+μ =  ------------------ ,    σ^2 = ------------------------------------------
+              T                                     T - 1
 ```
 Assuming T is sufficiently large (say, at least 30), the following provides a 95% confidence interval for the percolation threshold:
 ```
-     1.96σ            1.96σ
-mu - ------     mu + -------
-     sqrt(T)         sqrt(T)
+     1.96σ          1.96σ
+μ - ------  ,  μ + -------
+    sqrt(T)        sqrt(T)
 ```
 To perform a series of computational experiments, create a data type PercolationStats with the following API.
 ```Java
