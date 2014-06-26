@@ -3,6 +3,7 @@ import org.junit.Test;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
+
 /**
  * Test cases for Percolation
  *
@@ -24,7 +25,8 @@ public class PercolationTest
     }
 
     @Test
-    public void newPercolationIsAlwaysClosed() {
+    public void newPercolationIsAlwaysClosed()
+    {
         Percolation perc = new Percolation(2);
 
         assertFalse(perc.isOpen(1, 1));
@@ -75,7 +77,7 @@ public class PercolationTest
     {
         Percolation perc = new Percolation(1);
 
-        perc.open(1,1);
+        perc.open(1, 1);
         assertTrue(perc.isFull(1, 1));
     }
 
@@ -109,14 +111,15 @@ public class PercolationTest
     }
 
     @Test
-    public void testBackwashPrevention(){
+    public void testBackwashPrevention()
+    {
         Percolation perc = new Percolation(3);
 
         perc.open(1, 3);
         perc.open(2, 3);
         perc.open(3, 3);
         perc.open(3, 1);
-        assertFalse(perc.isFull(3,1));
+        assertFalse(perc.isFull(3, 1));
     }
 
     // Check boundary conditions
