@@ -21,9 +21,18 @@ public class DequeTest
     @Test
     public void testIsEmpty()
     {
+        assertTrue(sdque.isEmpty());
         sdque.addLast("test");
         sdque.removeFirst();
         assertTrue("IsEmpty() test failure. Deque is not empty.", sdque.isEmpty());
+    }
+
+    @Test
+    public void testSize()
+    {
+        assertTrue(sdque.size() == 0);
+        sdque.addFirst("s");
+        assertTrue(sdque.size() == 1);
     }
 
     @Test
@@ -45,6 +54,26 @@ public class DequeTest
     }
 
     @Test
+    public void testRemoveFirst()
+    {
+        assertTrue(sdque.size() == 0);
+        sdque.addLast("s");
+        assertTrue(sdque.size() == 1);
+        String item = sdque.removeFirst();
+        assertTrue(item == "s");
+    }
+
+    @Test
+    public void testRemoveLast()
+    {
+        assertTrue(sdque.size() == 0);
+        sdque.addFirst("s");
+        assertTrue(sdque.size() == 1);
+        String item = sdque.removeLast();
+        assertTrue(item == "s");
+    }
+
+    @Test
     public void traverse_NonEmpty_Empty_NonEmpty()
     {
         String obtained;
@@ -61,6 +90,35 @@ public class DequeTest
         sdque.addFirst(item3);
         obtained = sdque.removeFirst();
         assertEquals(item3 + " expected, got " + obtained, item3, obtained);
+    }
+
+    @Test (expected = java.lang.UnsupportedOperationException.class)
+    public void testIteratorException()
+    {
+        Iterator<String> iter = sdque.iterator();
+        iter.remove();
+    }
+
+    @Test (expected = java.util.NoSuchElementException.class)
+    public void testIteratorNextException()
+    {
+        Iterator<String> iter = sdque.iterator();
+        iter.next();
+    }
+
+
+
+    @Test (expected = java.lang.NullPointerException.class)
+    public void testNullItemCheck()
+    {
+        sdque.addFirst(null);
+    }
+
+   @Test (expected = java.util.NoSuchElementException.class)
+    public void testEmptyDequeCheck()
+    {
+        sdque.removeFirst();
+
     }
 
     @Test
