@@ -2,17 +2,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import static org.junit.Assert.*;
 
 public class DequeTest
 {
     private Deque<String> sdque;
+    private Deque<Integer> idque;
 
     @Before
     public void setUp()
     {
         sdque = new Deque<String>();
+        idque = new Deque<Integer>();
     }
 
     @Test
@@ -81,5 +84,79 @@ public class DequeTest
         String resultIter2 = iter2.next();
         assertEquals(item2 + " expected(with 1st Iter), got " + resultIter1, item2, resultIter1);
         assertEquals(item3 + " expected(with 2nd Iter), got " + resultIter2, item3, resultIter2);
+    }
+
+
+    // This performs n random operations on an Deque and Java's LinkedList, and
+    // verifies that they end up the same. This is useful for testing because
+    //
+    //     1) it can test for very large examples and
+    //     2) it tests enqueues and dequeues in all sorts of interleaved
+    //        orderings, possibly picking out obscure bugs.
+    //
+    // Note: this uses random values, which means that running tests different
+    // times could have different results (if, say, there is a bug in your code
+    // but hitting it is rare)
+    private void testNOperations(int n)
+    {
+        LinkedList<Integer> goodQueue = new LinkedList<Integer>();
+        int num;
+
+        for (int i=0; i<n; i++)
+        {
+            // Enqueue element if queue is empty, or on a 2/3 chance
+            if (idque.isEmpty() || StdRandom.uniform(1, 3) < 2)
+            {
+                num = StdRandom.uniform(1, 100);
+                idque.addFirst(num);
+                goodQueue.add(num);
+            }
+            else //dequeue
+            {
+                assertTrue("Queues differ on dequeue",
+                        goodQueue.remove() == idque.removeLast());
+            }
+
+            // Using different asserts, such as assertEquals, can clarify your
+            // intent to people reading your code technically, when using
+            // assertEquals, you're supposed to put the expected value first,
+            // then the actual value
+            assertEquals("goodQueue and queue do not match on isEmpty()",
+                    goodQueue.isEmpty(), idque.isEmpty());
+        }
+
+        // Now that we're done going through n operations, dequeue until empty
+        // and compare results
+        while (!idque.isEmpty())
+        {
+            assertTrue("goodQueue is empty but queue isn't", !goodQueue.isEmpty());
+            assertTrue("End dequeues do not match", goodQueue.remove() == idque.removeLast());
+        }
+
+        assertTrue("queue is empty but goodQueue isn't", goodQueue.isEmpty());
+    }
+
+    @Test
+    public void test10()
+    {
+        testNOperations(10);
+    }
+
+    @Test
+    public void test100()
+    {
+        testNOperations(100);
+    }
+
+    @Test
+    public void test10000()
+    {
+        testNOperations(10000);
+    }
+
+    @Test
+    public void testMillion()
+    {
+        testNOperations(1000000);
     }
 }
