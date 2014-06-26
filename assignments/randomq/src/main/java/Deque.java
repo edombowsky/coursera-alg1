@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -11,26 +9,146 @@ import java.util.NoSuchElementException;
  */
 public class Deque<Item> implements Iterable<Item>
 {
-    private List<Item> deque = new ArrayList<Item>();
+    private static final long MEGABYTE = 1024L * 1024L;
 
-    /**
-     * Constructs an empty deque
-     */
+    private Node<Item> front;   // pointer to front of the list
+    private Node<Item> rear;    // pointer to end of the list
+    private int size;           // Size of the queue
+
+    /*
+    * Construct an empty deque
+    */
     public Deque()
     {
-        // TODO: implement this
+        front = null;
+        rear  = null;
+        size  = 0;
     }
 
     /**
-     * Is the deque empty?
+     * Linked list nodes. Stores links for previous, next and item in the node.
      *
-     * @return true if queue is empty, false otherwise
+     * @param <Item>
      */
-    public boolean isEmpty()
+    private class Node<Item>
     {
-        // TODO: implement this
+        private Node<Item> previous;    // Pointer to previous node
+        private Node<Item> next;        // Pointer to next node
+        private Item value;             // Storage for data item
 
-        return deque.isEmpty();
+        public Node<Item> getPrevious()
+        {
+            return previous;
+        }
+
+        public void setPrevious(Node<Item> prev)
+        {
+            this.previous = prev;
+        }
+
+        public Node<Item> getNext()
+        {
+            return next;
+        }
+
+        public void setNext(Node<Item> next)
+        {
+            this.next = next;
+        }
+
+        public Item getValue()
+        {
+            return value;
+        }
+
+        public void setValue(Item value)
+        {
+            this.value = value;
+        }
+    }
+
+
+    /**
+     * Add element at the beginning of the queue
+     *
+     * @param item
+     */
+    public void addFirst(Item item)
+    {
+        if (item == null)
+        {
+            throw new NullPointerException("cannot enqueue null items");
+        }
+
+        Node<Item> node = new Node<Item>();
+        node.setValue(item);
+        node.setNext(front);
+        if (front != null) front.setPrevious(node);
+        if (front == null) rear = node;
+        front = node;
+        size++;
+    }
+
+    /**
+     * Add element at the end of the queue
+     *
+     * @param item
+     */
+    public void addLast(Item item)
+    {
+        if (item == null)
+        {
+            throw new NullPointerException("cannot enqueue null items");
+        }
+
+        Node<Item> node = new Node<Item>();
+        node.setValue(item);
+        node.setPrevious(rear);
+        if (rear != null) rear.setNext(node);
+        if (rear == null) front = node;
+
+        rear = node;
+        size++;
+    }
+
+    /**
+     * Remove an item from the beginning of the queue
+     */
+    public Item removeFirst()
+    {
+        if (front == null)
+        {
+            throw new NoSuchElementException("Deque underflow!! unable to remove.");
+        }
+
+        Node<Item> tmpFront = front.getNext();
+        if (tmpFront != null) tmpFront.setPrevious(null);
+        if (tmpFront == null) rear = null;
+        Item revovedItem = front.getValue();
+        front = tmpFront;
+        size--;
+
+        return revovedItem;
+    }
+
+    /**
+     * Remove an item from the beginning of the queue
+     */
+    public Item removeLast()
+    {
+        if (rear == null)
+        {
+            throw new NoSuchElementException("Deque underflow!! unable to remove.");
+        }
+
+        Node<Item> tmpRear = rear.getPrevious();
+        if (tmpRear != null) tmpRear.setNext(null);
+        if (tmpRear == null) front = null;
+        Item removedItem = rear.getValue();
+        rear = tmpRear;
+        size--;
+
+        return removedItem;
     }
 
     /**
@@ -40,91 +158,17 @@ public class Deque<Item> implements Iterable<Item>
      */
     public int size()
     {
-        // TODO: implement this
-
-        return deque.size();
+        return size;
     }
 
     /**
-     * Insert an item at the front of the queue
+     * Is the deque empty?
      *
-     * @param item    item to be inserted at the front of the queue
+     * @return true if queue is empty, false otherwise
      */
-    public void addFirst(Item item)
+    public boolean isEmpty()
     {
-        // TODO: implement this
-        if (item == null)
-        {
-            throw new NullPointerException("cannot enqueue null items");
-        }
-
-        System.out.println("adding at front: " + item);
-        deque.add(0, item);
-
-        System.out.println(deque);
-    }
-
-    /**
-     * Insert an item at the end of the queue
-     *
-     * @param item    item to inserted at the end of the queue
-     */
-    public void addLast(Item item)
-    {
-        // TODO: implement this
-        if (item == null)
-        {
-            throw new NullPointerException("cannot enqueue null items");
-        }
-
-        System.out.println("adding at rear: " + item);
-        deque.add(item);
-        System.out.println(deque);
-    }
-
-    /**
-     * Delete and return the item at the front
-     *
-     * @return the item at the front of the queue
-     */
-    public Item removeFirst()
-    {
-        // TODO: implement this
-
-        if (deque.isEmpty())
-        {
-            throw new NoSuchElementException("Deque underflow!! unable to remove.");
-        }
-
-        // remove an item from the beginning of the queue
-        Item rem = deque.remove(0);
-
-        System.out.println("removed from front: " + rem);
-        System.out.println(deque);
-
-        return rem;
-    }
-
-    /**
-     * Delete and return the item at the end
-     *
-     * @return the item at the end of the queue
-     */
-    public Item removeLast()
-    {
-        // TODO: implement this
-        if (deque.isEmpty())
-        {
-            throw new NoSuchElementException("Deque underflow!! unable to remove.");
-        }
-
-        // remove an item from the beginning of the queue
-        Item rem = deque.remove(deque.size() - 1);
-
-        System.out.println("removed from front: " + rem);
-        System.out.println(deque);
-
-        return rem;
+        return size == 0;
     }
 
     /**
@@ -134,53 +178,32 @@ public class Deque<Item> implements Iterable<Item>
     @Override
     public Iterator<Item> iterator()
     {
-        // TODO: implement this
-
         Iterator<Item> it = new Iterator<Item>()
         {
-            private int currentIndex = 0;
+            private Node current = front;
 
             @Override
             public boolean hasNext()
             {
-                // TODO: implement this
-//                return currentIndex < currentSize && arrayList[currentIndex] != null;
-                return false;
+                return current != null;
             }
 
             @Override
             public Item next()
             {
-                // TODO: implement this
-//                return arrayList[currentIndex++];
-                return null;
+                if (!hasNext())
+                {
+                    throw new NoSuchElementException("no items left in the queue");
+                }
+                Item item = (Item) current.getValue();
+                current = current.next;
+
+                return item;
             }
 
             @Override
             public void remove()
             {
-                //
-                //        ______________
-                //       /.--------------.\
-                //      //                \\
-                //     //                  \\
-                //    || .-..----. .-. .--. ||
-                //    ||( ( '-..-'|.-.||.-.|||
-                //    || \ \  ||  || ||||_||||
-                //    ||._) ) ||  \'-'/||-' ||
-                //     \\'-'  `'   `-' `'  //
-                //      \\                //
-                //       \\______________//
-                //        '--------------'
-                //              |_|_
-                //       ____ _/ _)_)
-                //           '  | (_)
-                //        .--'"\| ()
-                //              | |
-                //              | |
-                //              |_|
-
-                // TODO Auto-generated method stub
                 throw new UnsupportedOperationException("unsupported action");
             }
         };
@@ -195,24 +218,90 @@ public class Deque<Item> implements Iterable<Item>
      */
     public static void main(String[] args)
     {
-        // TODO: implement this
-        Deque<Integer> deque = new Deque();
+        Deque<Integer> deque = new Deque<Integer>();
 
         try
         {
+            Stopwatch sw = new Stopwatch();
+
             deque.addFirst(34);
-            deque.addLast(45);
-            deque.addLast(null);
+            deque.addFirst(67);
+            deque.addFirst(29);
+            deque.addFirst(765);
+            deque.addFirst(34);
+            deque.addFirst(67);
+            deque.addFirst(29);
+            deque.addFirst(765);
+            deque.addFirst(34);
+            deque.addFirst(67);
+            deque.addFirst(29);
+            deque.addFirst(765);
+            deque.addFirst(34);
+            deque.addFirst(67);
+            deque.addFirst(29);
+            deque.addFirst(765);
             deque.removeFirst();
             deque.removeFirst();
-            if (deque.isEmpty()) System.out.println("is empty");
             deque.removeFirst();
-            deque.addFirst(21);
-            deque.addFirst(98);
-            deque.addLast(5);
-            deque.addFirst(43);
+            deque.addLast(43);
+            deque.addLast(83);
+            deque.addLast(84);
+            deque.addLast(546);
+            deque.addLast(356);
             deque.removeLast();
+            deque.removeLast();
+            deque.removeLast();
+            deque.removeLast();
+            deque.removeFirst();
+            deque.removeFirst();
+            deque.removeFirst();
             System.out.println("Size of queue = " + deque.size());
+            System.out.println("elapsed time  = " + sw.elapsedTime());
+
+            Stopwatch sw1 = new Stopwatch();
+
+            StdOut.println("Contents of deque: [ ");
+//            Iterator itr = deque.iterator();
+//            while (itr.hasNext())
+//            {
+//                Object element = itr.next();
+//                StdOut.print(element + " ");
+//            }
+            for (int aDeque : deque)
+            {
+                StdOut.print(aDeque + " ");
+            }
+            StdOut.println("]");
+            StdOut.println();
+
+            int N  = Integer.parseInt(args[0]);
+
+            // add elements 1, ..., N using addFirst
+            StdOut.println(N + " random integers between 0 and 99");
+            Deque<Integer> list = new Deque<Integer>();
+            for (int i = 0; i < N; i++)
+            {
+                list.addFirst((int) (100 * Math.random()));
+            }
+
+            for (int aDeque : list)
+            {
+                StdOut.print(aDeque + " ");
+            }
+            StdOut.println();
+
+            // add elements 1, ..., N using addLast
+            StdOut.println(N + " random integers between 0 and 99");
+            Deque<Integer> list1 = new Deque<Integer>();
+            for (int i = 0; i < N; i++)
+            {
+                list1.addLast((int) (100 * Math.random()));
+            }
+            for (int aDeque : list1)
+            {
+                StdOut.print(aDeque + " ");
+            }
+            StdOut.println();
         }
         catch (UnsupportedOperationException e)
         {
