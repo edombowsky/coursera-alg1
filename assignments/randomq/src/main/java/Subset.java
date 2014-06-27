@@ -1,5 +1,3 @@
-import static java.lang.System.exit;
-
 /**
  * A client program Subset that takes a command-line integer k; reads in a
  * sequence of N strings from standard input using StdIn.readString(); and
@@ -32,14 +30,37 @@ public class Subset
 {
     public static void main(String[] args)
     {
-        int k;
-
         // TODO: implement this
-        k = StdIn.readInt();
+
+        if (args.length != 1)
+        {
+            throw new IllegalArgumentException("Provide argument for k!");
+        }
+
+        int k = Integer.parseInt(args[0]);
+
         if (k < 0)
         {
-            StdOut.println("Input must be > 0");
-            exit(1);
+            throw new IllegalArgumentException("k must be >= 0!");
+        }
+
+        RandomizedQueue<String> rq = new RandomizedQueue<String>();
+        int numItems = 0;
+
+        // read strings from std input:
+        while (!StdIn.isEmpty())
+        {
+            String s = StdIn.readString();
+            StdOut.println("Entered: " + s);
+            rq.enqueue(s);
+            ++numItems;
+        }
+
+        if (k > numItems) k = numItems;
+
+        for (int i = 0; i < k; i++)
+        {
+            StdOut.println(rq.dequeue());
         }
     }
 }

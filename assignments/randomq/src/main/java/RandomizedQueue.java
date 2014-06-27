@@ -7,6 +7,9 @@ import java.util.NoSuchElementException;
  */
 public class RandomizedQueue<Item> implements Iterable<Item>
 {
+    private static int INITIAL_QUEUE_SIZE         = 2;
+    private static int NEXT_QUEUE_RESIZE_MULTIPLE = 2;
+
     private Item[] theQueue;        // queue of elements
     private int N;                  // number of elements in queue
 
@@ -15,7 +18,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
      */
     public RandomizedQueue()
     {
-        theQueue = (Item[]) new Object [2];
+        theQueue = (Item[]) new Object [INITIAL_QUEUE_SIZE];
         N = 0;
     }
 
@@ -46,12 +49,9 @@ public class RandomizedQueue<Item> implements Iterable<Item>
      */
     public void enqueue(Item item)
     {
-        if (item == null)
-        {
-            throw new NullPointerException("cannot enqueue null items");
-        }
+        validateItem(item);
 
-        if (N == theQueue.length) resize(2*N);
+        if (isFull()) resize(NEXT_QUEUE_RESIZE_MULTIPLE * N);
 
         theQueue[N] = item;
 
@@ -62,6 +62,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
             theQueue[randomIndex] = theQueue[N];
             theQueue[N] = tmpItem;
         }
+
         N++;
     }
 
@@ -72,16 +73,15 @@ public class RandomizedQueue<Item> implements Iterable<Item>
      */
     public Item dequeue()
     {
-        if (this.isEmpty())
-        {
-            throw new NoSuchElementException("cannot dequeue from an empty queue");
-        }
+        checkItemExists();
 
-        Item item = theQueue[--N];
+        int randomItemIndex = StdRandom.uniform(N);
+        Item item = theQueue[randomItemIndex];
+        N--;
+        theQueue[randomItemIndex] = theQueue[N];
+        theQueue[N] = null;       // to avoid loitering
 
-        theQueue[N] = null;     // to avoind loitering
-
-        if (N > 0 && N == (theQueue.length/4)) resize(theQueue.length/2);
+        if (tooBig()) resize(theQueue.length / NEXT_QUEUE_RESIZE_MULTIPLE);
 
         return item;
     }
@@ -93,7 +93,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
      */
     public Item sample()
     {
-        if (isEmpty()) throw new NoSuchElementException("the queue is empty");
+        checkItemExists();
 
         return theQueue[StdRandom.uniform(N)];
     }
@@ -109,60 +109,127 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         return new RandomizedQueueIterator();
     }
 
+    /**
+     * An iterator, doesn't implement remove() since it's optional
+     */
     private class RandomizedQueueIterator implements Iterator<Item>
     {
-        private int  it;
-        private Item temp;
-        private int  defaultNumOfVar;
+        private int[] random = new int[N];
+        private int current  = N;
 
-        public RandomizedQueueIterator()
+        RandomizedQueueIterator()
         {
-            defaultNumOfVar = N;
-            for (int i = 0; i < defaultNumOfVar; i++)
+            // Find next random pos
+            while (current > 0)
             {
-                // Random number between i and hi
-                int r = i + StdRandom.uniform(defaultNumOfVar - i);
-                temp = theQueue[i];
-                theQueue[i] = theQueue[r];
-                theQueue[r] = temp;
+                int r = StdRandom.uniform(N);
+
+                if (random[r] == 0)
+                {
+                    // Add to random but with offset + 1 to be able to
+                    // differentiate from 0!
+                    random[r] = current;
+                    --current;
+                }
             }
-
-            it = 0;
         }
 
-        public boolean hasNext()
-        {
-            if (it < (defaultNumOfVar - 1)) return true;
-
-            return false;
-        }
+        public boolean hasNext() { return current < N; }
+        public void remove() { throw new UnsupportedOperationException("unsupported method"); }
 
         public Item next()
         {
-            if (it >= defaultNumOfVar) throw new NoSuchElementException();
-
-            return theQueue[it++];
-        }
-
-        public void remove()
-        {
-            throw new UnsupportedOperationException("unsupported action");
+            // Subtract offset and return item from the next position
+            if (current >= 0 && current < N)
+            {
+                return theQueue[random[current++] - 1];
+            }
+            else
+            {
+                throw new NoSuchElementException("no more elements in queue");
+            }
         }
     }
 
+    /**
+     * Resize the storage array.
+     *
+     * @param len the new size of the array
+     */
     private void resize(int len)
     {
-        StdOut.println("Calling resize");
-
         Item[] temp = (Item []) new Object[len];
 
+        int j = 0;
         for (int i = 0; i < N; ++i)
         {
-            temp[i] = theQueue[i];
+            // Take only existing (non null) nodes
+            if (theQueue[i] != null) temp[j++] = theQueue[i];
         }
 
         theQueue = temp;
     }
+
+    /**
+     * Validate that an item is not null.
+     *
+     * @param item
+     */
+    private void validateItem(Item item)
+    {
+        if (item == null)
+        {
+            throw new NullPointerException("cannot enqueue null items");
+        }
+    }
+
+    /**
+     * Is the storage space full?
+     *
+     * @return
+     */
+    private boolean isFull()
+    {
+        return (N == theQueue.length);
+    }
+
+    /**
+     *
+     */
+    private void checkItemExists()
+    {
+        if (isEmpty())
+        {
+            throw new NoSuchElementException("queue is empty");
+        }
+    }
+
+    /**
+     * Has the storage space become full and in need of resizing?
+     *
+     * @return
+     */
+    private boolean tooBig()
+    {
+        return (N > 0 && N == (theQueue.length / 4));
+    }
+
+    /**
+     * Show the string representation of the queue
+     *
+     * @return
+     */
+    public String showQueue()
+    {
+        StringBuilder s = new StringBuilder();
+        for (Item item : this)
+        {
+            s.append(item + " ");
+        }
+
+        return s.toString();
+    }
+
 
     /**
      * For unit testing
@@ -173,10 +240,15 @@ public class RandomizedQueue<Item> implements Iterable<Item>
     {
         // Build a queue containing the Integers 1,2,...,6:
         RandomizedQueue<Integer> Q = new RandomizedQueue<Integer>();
+
         for (int i = 1; i < 7; ++i)
         {
             Q.enqueue(i); // autoboxing! cool!
         }
+
+        StdOut.println("Queue containing the integers 1,2,...,6");
+        StdOut.println(Q.showQueue());
+        StdOut.println();
 
         // Print 30 die rolls to standard output
         StdOut.print("Some die rolls: ");
@@ -197,25 +269,29 @@ public class RandomizedQueue<Item> implements Iterable<Item>
                 StdStats.stddev(rolls));
 
         // Let's look at the iterator. First, we make a queue of colours:
-
         RandomizedQueue<String> C = new RandomizedQueue<String>();
         C.enqueue("red");
         C.enqueue("blue");
         C.enqueue("green");
         C.enqueue("yellow");
 
+        StdOut.println();
+        StdOut.println("Queue containing some colours");
+        StdOut.println(C.showQueue());
+        StdOut.println();
+
         Iterator I = C.iterator();
         Iterator J = C.iterator();
 
         StdOut.print("Two colours from first shuffle: ");
-        StdOut.print(I.next()+" ");
-        StdOut.print(I.next()+" ");
+        StdOut.print(I.next() + " ");
+        StdOut.print(I.next() + " ");
 
         StdOut.print("\nEntire second shuffle: ");
-        while (J.hasNext()) StdOut.print(J.next()+" ");
+        while (J.hasNext()) StdOut.print(J.next() + " ");
 
         StdOut.print("\nRemaining two colours from first shuffle: ");
-        StdOut.print(I.next()+" ");
+        StdOut.print(I.next() + " ");
         StdOut.println(I.next());
     }
 }
