@@ -16,7 +16,8 @@ public class RandomizedQueueTest
     {
         RandomizedQueue<String> queue = new RandomizedQueue<String>();
 
-        assertTrue(queue.isEmpty());
+//        assertTrue(queue.isEmpty());
+        assertThat(queue.isEmpty(), is(true));
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -83,8 +84,10 @@ public class RandomizedQueueTest
 
         queue.sample();
 
-        assertEquals(1, queue.size());
-        assertFalse(queue.isEmpty());
+//        assertEquals(1, queue.size());
+//        assertFalse(queue.isEmpty());
+        assertThat("Queue Size", queue.size(), is(1));
+        assertThat("Queue isEmpty", queue.isEmpty(), is(false));
     }
 
     @Test
@@ -104,8 +107,10 @@ public class RandomizedQueueTest
             results[i] = queue.sample();
         }
 
-        assertEquals(NUMBER_OF_ITERATIONS,results.length);
-        assertEquals(NUMBER_OF_ITERATIONS, queue.size());
+//        assertEquals(NUMBER_OF_ITERATIONS, results.length);
+//        assertEquals(NUMBER_OF_ITERATIONS, queue.size());
+        assertThat("Result set size", results.length, is(NUMBER_OF_ITERATIONS));
+        assertThat("Queue size", queue.size(), is(NUMBER_OF_ITERATIONS));
     }
 
     @Test
@@ -113,7 +118,8 @@ public class RandomizedQueueTest
     {
         RandomizedQueue<Integer> queue = new RandomizedQueue<Integer>();
 
-        for (int i = 0; i < NUMBER_OF_ITERATIONS; i++) {
+        for (int i = 0; i < NUMBER_OF_ITERATIONS; i++)
+        {
             queue.enqueue(i);
         }
 
@@ -126,10 +132,11 @@ public class RandomizedQueueTest
             expected[i] = new Integer(i);
         }
 
-        assertEquals(0, queue.size());
+//        assertEquals(0, queue.size());
+        assertThat("Queue size", queue.size(), is(0));
 
         Arrays.sort(results);
-        assertThat(results, is(expected));
+        assertThat("Expected results", results, is(expected));
     }
 
     @Test
@@ -167,14 +174,17 @@ public class RandomizedQueueTest
 
         for (int i = 0; i < NUMBER_OF_ITERATIONS; i++)
         {
-            assertTrue(iter.hasNext());
+//            assertTrue(iter.hasNext());
+            assertThat("Iterator check", iter.hasNext(), is(true));
             iter.hasNext();
             results[i] = iter.next();
             expected[i] = new Integer(i);
         }
 
-        assertFalse(iter.hasNext());
-        assertEquals(NUMBER_OF_ITERATIONS, results.length);
+//        assertFalse(iter.hasNext());
+//        assertEquals(NUMBER_OF_ITERATIONS, results.length);
+        assertThat(iter.hasNext(), is(false));
+        assertThat(results.length, is(NUMBER_OF_ITERATIONS));
     }
 
     @Test
@@ -182,11 +192,14 @@ public class RandomizedQueueTest
     {
         RandomizedQueue<String> queue = new RandomizedQueue<String>();
 
-        assertEquals(queue.size(), 0);
+//        assertEquals(queue.size(), 0);
+        assertThat("Size check #1", queue.size(), is(0));
         queue.enqueue("t");
-        assertEquals(queue.size(), 1);
+//        assertEquals(queue.size(), 1);
+        assertThat("Size check #2", queue.size(), is(1));
         queue.dequeue();
-        assertEquals(queue.size(), 0);
+//        assertEquals(queue.size(), 0);
+        assertThat("Size check #3", queue.size(), is(0));
     }
 
     @Test
@@ -214,8 +227,8 @@ public class RandomizedQueueTest
         queue.enqueue("test18");
         queue.enqueue("test19");
         queue.enqueue("test20");
-        assertThat(queue.size(), is(20));
 //        assertEquals(queue.size(), 20);
+        assertThat("Size check #1", queue.size(), is(20));
 
         queue.dequeue();
         queue.dequeue();
@@ -238,7 +251,7 @@ public class RandomizedQueueTest
         queue.dequeue();
         queue.dequeue();
 //        assertEquals(queue.size(), 0);
-        assertThat(queue.size(), is(0));
+        assertThat("Size check #1", queue.size(), is(0));
     }
 
     @Test

@@ -4,6 +4,7 @@ import org.junit.Test;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class DequeTest
@@ -24,7 +25,8 @@ public class DequeTest
         assertTrue(sdque.isEmpty());
         sdque.addLast("test");
         sdque.removeFirst();
-        assertTrue("IsEmpty() test failure. Deque is not empty.", sdque.isEmpty());
+//        assertTrue("IsEmpty() test failure. Deque is not empty.", sdque.isEmpty());
+        assertThat("IsEmpty() test failure. Deque is not empty.", sdque.isEmpty(), is(true));
     }
 
     @Test
