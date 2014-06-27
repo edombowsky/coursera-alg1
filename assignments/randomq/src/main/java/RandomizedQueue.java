@@ -7,12 +7,16 @@ import java.util.NoSuchElementException;
  */
 public class RandomizedQueue<Item> implements Iterable<Item>
 {
+    private Item[] theQueue;        // queue of elements
+    private int N;                  // number of elements in queue
+
     /**
      * Construct an empty randomized queue
      */
     public RandomizedQueue()
     {
-        // TODO: implement this
+        theQueue = (Item[]) new Object [2];
+        N = 0;
     }
 
     /**
@@ -22,8 +26,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
      */
     public boolean isEmpty()
     {
-        // TODO: implement this
-        return false;
+        return N == 0;
     }
 
     /**
@@ -33,8 +36,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
      */
     public int size()
     {
-        // TODO: implement this
-        return 0;
+        return N;
     }
 
     /**
@@ -49,7 +51,18 @@ public class RandomizedQueue<Item> implements Iterable<Item>
             throw new NullPointerException("cannot enqueue null items");
         }
 
-        // TODO: implement this
+        if (N == theQueue.length) resize(2*N);
+
+        theQueue[N] = item;
+
+        if (N > 0)
+        {
+            int randomIndex = StdRandom.uniform(N + 1);
+            Item tmpItem = theQueue[randomIndex];
+            theQueue[randomIndex] = theQueue[N];
+            theQueue[N] = tmpItem;
+        }
+        N++;
     }
 
     /**
@@ -64,8 +77,13 @@ public class RandomizedQueue<Item> implements Iterable<Item>
             throw new NoSuchElementException("cannot dequeue from an empty queue");
         }
 
-        // TODO: implement this
-        return null;
+        Item item = theQueue[--N];
+
+        theQueue[N] = null;     // to avoind loitering
+
+        if (N > 0 && N == (theQueue.length/4)) resize(theQueue.length/2);
+
+        return item;
     }
 
     /**
@@ -75,8 +93,9 @@ public class RandomizedQueue<Item> implements Iterable<Item>
      */
     public Item sample()
     {
-        // TODO: implement this
-        return null;
+        if (isEmpty()) throw new NoSuchElementException("the queue is empty");
+
+        return theQueue[StdRandom.uniform(N)];
     }
 
     /**
@@ -87,37 +106,62 @@ public class RandomizedQueue<Item> implements Iterable<Item>
     @Override
     public Iterator<Item> iterator()
     {
-        // TODO: implement this
+        return new RandomizedQueueIterator();
+    }
 
-        Iterator<Item> it = new Iterator<Item>()
+    private class RandomizedQueueIterator implements Iterator<Item>
+    {
+        private int  it;
+        private Item temp;
+        private int  defaultNumOfVar;
+
+        public RandomizedQueueIterator()
         {
-            private int currentIndex = 0;
-
-            @Override
-            public boolean hasNext()
+            defaultNumOfVar = N;
+            for (int i = 0; i < defaultNumOfVar; i++)
             {
-                // TODO: implement this
-//                return currentIndex < currentSize && arrayList[currentIndex] != null;
-                return false;
+                // Random number between i and hi
+                int r = i + StdRandom.uniform(defaultNumOfVar - i);
+                temp = theQueue[i];
+                theQueue[i] = theQueue[r];
+                theQueue[r] = temp;
             }
 
-            @Override
-            public Item next()
-            {
-                // TODO: implement this
-//                return arrayList[currentIndex++];
-                return null;
-            }
+            it = 0;
+        }
 
-            @Override
-            public void remove()
-            {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("unsupported action");
-            }
-        };
+        public boolean hasNext()
+        {
+            if (it < (defaultNumOfVar - 1)) return true;
 
-        return it;
+            return false;
+        }
+
+        public Item next()
+        {
+            if (it >= defaultNumOfVar) throw new NoSuchElementException();
+
+            return theQueue[it++];
+        }
+
+        public void remove()
+        {
+            throw new UnsupportedOperationException("unsupported action");
+        }
+    }
+
+    private void resize(int len)
+    {
+        StdOut.println("Calling resize");
+
+        Item[] temp = (Item []) new Object[len];
+
+        for (int i = 0; i < N; ++i)
+        {
+            temp[i] = theQueue[i];
+        }
+
+        theQueue = temp;
     }
 
     /**
@@ -127,6 +171,51 @@ public class RandomizedQueue<Item> implements Iterable<Item>
      */
     public static void main(String[] args)
     {
-        // TODO: implement this
+        // Build a queue containing the Integers 1,2,...,6:
+        RandomizedQueue<Integer> Q = new RandomizedQueue<Integer>();
+        for (int i = 1; i < 7; ++i)
+        {
+            Q.enqueue(i); // autoboxing! cool!
+        }
+
+        // Print 30 die rolls to standard output
+        StdOut.print("Some die rolls: ");
+        for (int i = 1; i < 30; ++i)
+        {
+            StdOut.print(Q.sample() +" ");
+        }
+        StdOut.println();
+
+        // Let's be more serious: do they really behave like die rolls?
+        int[] rolls = new int [10000];
+        for (int i = 0; i < 10000; ++i)
+        {
+            rolls[i] = Q.sample(); // autounboxing! Also cool!
+        }
+        StdOut.printf("Mean (should be around 3.5): %5.4f\n", StdStats.mean(rolls));
+        StdOut.printf("Standard deviation (should be around 1.7): %5.4f\n",
+                StdStats.stddev(rolls));
+
+        // Let's look at the iterator. First, we make a queue of colours:
+
+        RandomizedQueue<String> C = new RandomizedQueue<String>();
+        C.enqueue("red");
+        C.enqueue("blue");
+        C.enqueue("green");
+        C.enqueue("yellow");
+
+        Iterator I = C.iterator();
+        Iterator J = C.iterator();
+
+        StdOut.print("Two colours from first shuffle: ");
+        StdOut.print(I.next()+" ");
+        StdOut.print(I.next()+" ");
+
+        StdOut.print("\nEntire second shuffle: ");
+        while (J.hasNext()) StdOut.print(J.next()+" ");
+
+        StdOut.print("\nRemaining two colours from first shuffle: ");
+        StdOut.print(I.next()+" ");
+        StdOut.println(I.next());
     }
 }

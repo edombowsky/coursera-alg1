@@ -1,3 +1,5 @@
+import static java.lang.System.exit;
+
 /**
  * A client program Subset that takes a command-line integer k; reads in a
  * sequence of N strings from standard input using StdIn.readString(); and
@@ -10,10 +12,12 @@
  * G
  * A
  * CC
+ *
  * % echo A B C D E F G H I | java Subset 3
  * E
  * F
  * G
+ *
  * % echo AA BB BB BB BB BB CC CC | java Subset 8
  * BB
  * AA
@@ -28,6 +32,14 @@ public class Subset
 {
     public static void main(String[] args)
     {
+        int k;
+
         // TODO: implement this
+        k = StdIn.readInt();
+        if (k < 0)
+        {
+            StdOut.println("Input must be > 0");
+            exit(1);
+        }
     }
 }
