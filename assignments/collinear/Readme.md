@@ -11,18 +11,18 @@ Points and lines
 
 **Point data type.** Create an immutable data type `Point` that represents a point in the plane by implementing the following API:
 ```Java
-    public class Point implements Comparable<Point> {
-       public final Comparator<Point> SLOPE_ORDER;        // compare points by slope to this point
+public class Point implements Comparable<Point> {
+   public final Comparator<Point> SLOPE_ORDER;        // compare points by slope to this point
 
-       public Point(int x, int y)                         // construct the point (x, y)
+   public Point(int x, int y)                         // construct the point (x, y)
 
-       public   void draw()                               // draw this point
-       public   void drawTo(Point that)                   // draw the line segment from this point to that point
-       public String toString()                           // string representation
+   public   void draw()                               // draw this point
+   public   void drawTo(Point that)                   // draw the line segment from this point to that point
+   public String toString()                           // string representation
 
-       public    int compareTo(Point that)                // is this point lexicographically smaller than that point?
-       public double slopeTo(Point that)                  // the slope between this point and that point
-    }
+   public    int compareTo(Point that)                // is this point lexicographically smaller than that point?
+   public double slopeTo(Point that)                  // the slope between this point and that point
+}
 ```
 To get started, use the data type Point.java, which implements the constructor and the `draw()`, `drawTo()`, and `toString()` methods. Your job is to add the following components.
 
@@ -39,7 +39,7 @@ The order of growth of the running time of your program should be *N<sup>4</sup>
 A faster, sorting-based solution. Remarkably, it is possible to solve the problem much faster than the brute-force solution described above. Given a point p, the following method determines whether p participates in a set of 4 or more collinear points.
 
 * Think of *p* as the origin.
-* For each other point *q*, determine the slope it makes with p**.
+* For each other point *q*, determine the slope it makes with *p*.
 * Sort the points according to the slopes they makes with *p*.
 * Check if any 3 (or more) adjacent points in the sorted order have equal slopes with respect to *p*. If so, these points, together with *p*, are collinear. 
 
@@ -51,47 +51,46 @@ Write a program Fast.java that implements this algorithm. The order of growth of
 
 **APIs.** Each program should take the name of an input file as a command-line argument, read the input file (in the format specified below), print to standard output the line segments discovered (in the format specified below), and draw to standard draw the line segments discovered (in the format specified below). Here are the APIs.
 ```Java
+public class Brute {
+   public static void main(String[] args)
+}
 
-    public class Brute {
-       public static void main(String[] args)
-    }
-
-    public class Fast {
-       public static void main(String[] args)
-    }
+public class Fast {
+   public static void main(String[] args)
+}
 ```
 **Input format.** Read the points from an input file in the following format: An integer *N*, followed by *N* pairs of integers (x, y), each between 0 and 32,767. Below are two examples.
 ```
-    % more input6.txt       % more input8.txt
-    6                       8
-    19000  10000             10000      0
-    18000  10000                 0  10000
-    32000  10000              3000   7000
-    21000  10000              7000   3000
-     1234   5678             20000  21000
-    14000  10000              3000   4000
-                             14000  15000
-                              6000   7000
+% more input6.txt       % more input8.txt
+6                       8
+19000  10000             10000      0
+18000  10000                 0  10000
+32000  10000              3000   7000
+21000  10000              7000   3000
+ 1234   5678             20000  21000
+14000  10000              3000   4000
+                         14000  15000
+                          6000   7000
 ```
 **Output format.** Print to standard output the line segments that your program discovers, one per line. Print each line segment as an ordered sequence of its constituent points, separated by " -> ".
 ```
-    % java Brute input6.txt
-    (14000, 10000) -> (18000, 10000) -> (19000, 10000) -> (21000, 10000)
-    (14000, 10000) -> (18000, 10000) -> (19000, 10000) -> (32000, 10000)
-    (14000, 10000) -> (18000, 10000) -> (21000, 10000) -> (32000, 10000)
-    (14000, 10000) -> (19000, 10000) -> (21000, 10000) -> (32000, 10000)
-    (18000, 10000) -> (19000, 10000) -> (21000, 10000) -> (32000, 10000)
+% java Brute input6.txt
+(14000, 10000) -> (18000, 10000) -> (19000, 10000) -> (21000, 10000)
+(14000, 10000) -> (18000, 10000) -> (19000, 10000) -> (32000, 10000)
+(14000, 10000) -> (18000, 10000) -> (21000, 10000) -> (32000, 10000)
+(14000, 10000) -> (19000, 10000) -> (21000, 10000) -> (32000, 10000)
+(18000, 10000) -> (19000, 10000) -> (21000, 10000) -> (32000, 10000)
 
-    % java Brute input8.txt
-    (10000, 0) -> (7000, 3000) -> (3000, 7000) -> (0, 10000) 
-    (3000, 4000) -> (6000, 7000) -> (14000, 15000) -> (20000, 21000) 
+% java Brute input8.txt
+(10000, 0) -> (7000, 3000) -> (3000, 7000) -> (0, 10000) 
+(3000, 4000) -> (6000, 7000) -> (14000, 15000) -> (20000, 21000) 
 
-    % java Fast input6.txt
-    (14000, 10000) -> (18000, 10000) -> (19000, 10000) -> (21000, 10000) -> (32000, 10000) 
+% java Fast input6.txt
+(14000, 10000) -> (18000, 10000) -> (19000, 10000) -> (21000, 10000) -> (32000, 10000) 
 
-    % java Fast input8.txt
-    (10000, 0) -> (7000, 3000) -> (3000, 7000) -> (0, 10000)
-    (3000, 4000) -> (6000, 7000) -> (14000, 15000) -> (20000, 21000)
+% java Fast input8.txt
+(10000, 0) -> (7000, 3000) -> (3000, 7000) -> (0, 10000)
+(3000, 4000) -> (6000, 7000) -> (14000, 15000) -> (20000, 21000)
 ```
 Also, draw the points using`draw()` and draw the line segments using `drawTo()`. Your programs should call `draw()` once for each point in the input file and it should call `drawTo()` once for each line segment discovered. Before drawing, use `StdDraw.setXscale(0, 32768)` and `StdDraw.setYscale(0, 32768)` to rescale the coordinate system.
 
