@@ -219,7 +219,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
      *
      * @return
      */
-    public String showQueue()
+    private String showQueue()
     {
         StringBuilder s = new StringBuilder();
         for (Item item : this)

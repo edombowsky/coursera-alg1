@@ -30,8 +30,6 @@ public class Subset
 {
     public static void main(String[] args)
     {
-        // TODO: implement this
-
         if (args.length != 1)
         {
             throw new IllegalArgumentException("Provide argument for k!");
@@ -51,7 +49,6 @@ public class Subset
         while (!StdIn.isEmpty())
         {
             String s = StdIn.readString();
-            StdOut.println("Entered: " + s);
             rq.enqueue(s);
             ++numItems;
         }
