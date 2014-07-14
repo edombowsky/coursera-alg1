@@ -10,6 +10,7 @@
  *
  *************************************************************************/
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class Point implements Comparable<Point>
@@ -190,6 +191,25 @@ public class Point implements Comparable<Point>
         Point p9 = new Point(14407, 17831);
         StdOut.println("Vertical line slope: " + p8.slopeTo(p9));
 
+        Point origin = new Point(0, 0);
+        Point[] pts = new Point[] {
+                new Point(1, 1),
+                new Point(1, 0),
+                new Point(1, -1),
+                new Point(0, 1),
+                origin,
+                new Point(0, -1),
+                new Point(-1, 1),
+                new Point(-1, 0),
+                new Point(-1, -1)
+        };
+
+        Arrays.sort(pts, origin.SLOPE_ORDER);
+
+        for (int i = 0; i < pts.length; ++i)
+        {
+            StdOut.println(pts[i] +": "+ origin.slopeTo(pts[i]));
+        }
 
         p1.draw();
         p2.draw();
