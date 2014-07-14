@@ -28,6 +28,7 @@ public class Point implements Comparable<Point>
         public int compare(Point p, Point q)
         {
             double pqSlope = slopeTo(p) - slopeTo(q);
+
             if (pqSlope > 0.0)
             {
                 return 1;
@@ -108,7 +109,11 @@ public class Point implements Comparable<Point>
         }
 
         // Horizontal line segment
-        if (this.y == that.y) return 0.0;
+        if (this.y == that.y) //return 0.0;
+        {
+            double a = 1.0;
+            return (a - a) / a; //positive zero
+        }
 
         double deltaX = (double) that.x - (double) this.x;
         double deltaY = (double) that.y - (double) this.y;
