@@ -23,7 +23,25 @@ public class Point implements Comparable<Point>
      * (y2 − y0) / (x2 − x0). Treat horizontal, vertical, and degenerate line
      * segments as in the slopeTo() method.
      */
-//    public final Comparator<Point> SLOPE_ORDER;       // YOUR DEFINITION HERE
+    public final Comparator<Point> SLOPE_ORDER = new Comparator<Point>()
+    {
+        public int compare(Point p, Point q)
+        {
+            double pqSlope = slopeTo(p) - slopeTo(q);
+            if (pqSlope > 0.0)
+            {
+                return 1;
+            }
+            else if (pqSlope < 0.0)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    };
 
     private final int x;                              // x coordinate
     private final int y;                              // y coordinate
@@ -77,8 +95,24 @@ public class Point implements Comparable<Point>
     public double slopeTo(Point that)
     {
         /* YOUR CODE HERE */
+        if (that.x == this.x)
+        {
+            if (that.y == this.y)
+            {
+                // Degenerative line segment
+                return Double.NEGATIVE_INFINITY;
+            }
+
+            // Vertical line segment
+            return Double.POSITIVE_INFINITY;
+        }
+
+        // Horizontal line segment
+        if (this.y == that.y) return 0.0;
+
         double deltaX = (double) that.x - (double) this.x;
         double deltaY = (double) that.y - (double) this.y;
+
         return deltaY / deltaX;
     }
 
@@ -139,16 +173,18 @@ public class Point implements Comparable<Point>
         // Horizontal line
         Point p4 = new Point(7453, 14118);
         Point p5 = new Point(2682, 14118);
-        StdOut.println(p4.slopeTo(p5));
+        StdOut.println("Horizontal line slope: " + p4.slopeTo(p5));
 
+        // Degenerate line segment
         Point p6 = new Point(0, 30000);
-        Point p7 = new Point(0, 25000);
-        StdOut.println(p6.slopeTo(p7));
+        Point p7 = new Point(0, 30000);
+        StdOut.println("Degenerate line segment: " + p6.slopeTo(p7));
 
         // Vertical line
         Point p8 = new Point(14407, 19953);
         Point p9 = new Point(14407, 17831);
-        StdOut.println(p8.slopeTo(p9));
+        StdOut.println("Vertical line slope: " + p8.slopeTo(p9));
+
 
         p1.draw();
         p2.draw();
