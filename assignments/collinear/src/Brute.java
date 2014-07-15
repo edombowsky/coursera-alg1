@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Write a program Brute.java that examines 4 points at a time and checks whether
  * they all lie on the same line segment, printing out any such line segments to
@@ -10,31 +12,7 @@
  */
 public class Brute
 {
-    private static boolean isCollinear(Point[] points)
-    {
-        if (points.length < 3)
-        {
-            return true;
-        }
-
-        for (int i = 2; i < points.length; i++)
-        {
-            if (points[0].SLOPE_ORDER.compare(points[1], points[i]) != 0)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static boolean isCollinearTestSuccessful()
-    {
-        Point[] points1 = new Point[] { new Point(0, 0), new Point(1, 1), new Point(2, 2), };
-        Point[] points2 = new Point[] { new Point(0, 0), new Point(1, 1), new Point(2, 3), };
-
-        return (isCollinear(points1) && !isCollinear(points2));
-    }
+    private static final int POINTS_IN_LINE = 4;
 
     private static Point[] readInputFile(String filename)
     {
@@ -42,38 +20,62 @@ public class Brute
         int nPoints = in.readInt();
         Point[] points = new Point[nPoints];
 
+        if (nPoints <= 0)
+        {
+            throw new IllegalArgumentException(
+                    "Number of points must be greater than 0.");
+        }
+
         for (int i = 0; i < nPoints; i++)
         {
             points[i] = new Point(in.readInt(), in.readInt());
+            points[i].draw();
         }
 
-        assert nPoints == points.length;
+        if (nPoints != points.length)
+        {
+            throw new IllegalArgumentException(
+                    "Number of points in file must be = " + nPoints);
+        }
+
+        in.close();
+
         return points;
     }
 
     private static void brute(Point[] pts)
     {
-        int i, j, k, l;
+        Point [] line = new Point[POINTS_IN_LINE];
+        int N = pts.length;
 
-        for (i = 0; i < pts.length; i++)
+        // loop through possible 4-tuples
+        for (int i = 0; i < N - 3; i++)
         {
-            pts[i].draw();
-            for (j = i + 1; j < pts.length; j++)
+            for (int j = i + 1; j < N - 2; j++)
             {
-                for (k = j + 1; k < pts.length; k++)
+                for (int k = j + 1; k < N - 1; k++)
                 {
-                    if (!isCollinear(new Point[] { pts[i], pts[j], pts[k] }))
+                    for (int m = k + 1; m < N; m++)
                     {
-                        continue;
-                    }
-
-                    for (l = k + 1; l < pts.length; l++)
-                    {
-                        if (isCollinear(new Point[] { pts[i], pts[j], pts[k], pts[l] }))
+                        double s1 = pts[i].slopeTo(pts[j]);
+                        double s2 = pts[i].slopeTo(pts[k]);
+                        double s3 = pts[i].slopeTo(pts[m]);
+                        if (s1 == s2 && s1 == s3)
                         {
-                            StdOut.println(pts[i] + " -> " + pts[j] + " -> "
-                                    + pts[k] + " -> " + pts[l]);
-                            pts[i].drawTo(pts[l]);
+                            line[0] = pts[i];
+                            line[1] = pts[j];
+                            line[2] = pts[k];
+                            line[3] = pts[m];
+
+                            Arrays.sort(line);
+
+                            StdOut.print(line[0].toString() + " -> ");
+                            StdOut.print(line[1].toString() + " -> ");
+                            StdOut.print(line[2].toString() + " -> ");
+                            StdOut.println(line[3].toString());
+                            line[0].drawTo(line[3]);
+
+                            StdDraw.show(0);
                         }
                     }
                 }
@@ -86,17 +88,34 @@ public class Brute
 
         if (args.length != 1)
         {
-            throw new IllegalArgumentException("Specify a file path as the first argument!");
+            throw new IllegalArgumentException(
+                    "Specify a file path as the first argument!");
         }
 
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.setPenRadius(0.005);
         StdDraw.setXscale(0, 32768);
         StdDraw.setYscale(0, 32768);
+        StdDraw.show(0);
 
-        Point[] pts = readInputFile(args[0]);
-        Quick.sort(pts);
+        Point[] points = readInputFile(args[0]);
 
-        brute(pts);
+        // read in the input
+        String filename = args[0];
+        In in = new In(filename);
+        int N = in.readInt();
+
+        final int fieldSize = 32768;
+        StdDraw.setXscale(0, fieldSize);
+        StdDraw.setYscale(0, fieldSize);
+        StdDraw.show();
+
+        Arrays.sort(points);
+
+        //Stopwatch timer = new Stopwatch(); // start timer
+        brute(points);
+        //StdOut.println(timer.elapsedTime()); // stop and print timer
+
+        StdDraw.show(0);
     }
 }

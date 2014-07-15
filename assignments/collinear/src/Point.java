@@ -16,6 +16,23 @@ import java.util.Comparator;
 public class Point implements Comparable<Point>
 {
     /**
+     * Constant positive zero.
+     */
+    private static final double POSITIVE_ZERO = (1.0 - 1.0) / 1.0; // +0.0
+
+    /**
+     * Constant negative zero.
+     */
+    private static final double NEGATIVE_ZERO = (1.0 - 1.0) / -1.0; // -0.0
+
+    private static final double DEGENERATE = Double.NEGATIVE_INFINITY;
+    private static final double VERTICAL   = Double.POSITIVE_INFINITY;
+    private static final double HORIZONTAL = POSITIVE_ZERO;
+
+    // compare points by slope
+    public final Comparator<Point> SLOPE_ORDER = new SlopeOrder();
+
+    /**
      * Compare points by slope to this point.
      *
      * Compare points by the slopes they make with the invoking point (x0, y0).
@@ -24,26 +41,27 @@ public class Point implements Comparable<Point>
      * (y2 − y0) / (x2 − x0). Treat horizontal, vertical, and degenerate line
      * segments as in the slopeTo() method.
      */
-    public final Comparator<Point> SLOPE_ORDER = new Comparator<Point>()
+    private class SlopeOrder implements Comparator<Point>
     {
+        /**
+         *
+         * @param p
+         * @param q
+         *
+         * @return
+         */
         public int compare(Point p, Point q)
         {
-            double pqSlope = slopeTo(p) - slopeTo(q);
+            double slope1 = slopeTo(p);
+            double slope2 = slopeTo(q);
 
-            if (pqSlope > 0.0)
-            {
-                return 1;
-            }
-            else if (pqSlope < 0.0)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
+            if (slope1 < slope2) return -1;
+            else if (slope1 > slope2) return 1;
+
+            return 0;
         }
-    };
+    }
+
 
     private final int x;                              // x coordinate
     private final int y;                              // y coordinate
@@ -102,18 +120,17 @@ public class Point implements Comparable<Point>
             if (that.y == this.y)
             {
                 // Degenerative line segment
-                return Double.NEGATIVE_INFINITY;
+                return DEGENERATE;
             }
 
             // Vertical line segment
-            return Double.POSITIVE_INFINITY;
+            return VERTICAL;
         }
 
         // Horizontal line segment
-        if (this.y == that.y) //return 0.0;
+        if (this.y == that.y)
         {
-            double a = 1.0;
-            return (a - a) / a; //positive zero
+            return HORIZONTAL;
         }
 
         double deltaX = (double) that.x - (double) this.x;
@@ -132,22 +149,22 @@ public class Point implements Comparable<Point>
      * @param that  point to compare to
      *
      * @return a negative value if a < b, 0 if a and b are equal, a positive value if a > b
-
+     *
      */
     public int compareTo(Point that)
     {
         /* YOUR CODE HERE */
         if (this.y < that.y || (this.y == that.y && this.x < that.x))
         {
-            return -1;
+            return -1;  // less than
         }
         else if (this.y == that.y && this.x == that.x)
         {
-            return 0;
+            return 0;  //equal to
         }
         else
         {
-            return 1;
+            return 1;  // greater than
         }
     }
 
