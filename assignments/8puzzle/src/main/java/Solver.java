@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /*************************************************************************
  * Name: Earl Dombowsky
  * Email:
@@ -67,7 +69,7 @@ public class Solver
 
         if (N <= 0)
         {
-            throw new IllegalArgumentException(
+            throw new IndexOutOfBoundsException(
                     "Board dimension must be greater than 0.");
         }
 

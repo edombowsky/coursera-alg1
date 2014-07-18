@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /*************************************************************************
  * Name: Earl Dombowsky
  * Email:
@@ -11,6 +13,9 @@
 
 public class Board
 {
+    private int N;
+    private byte[][] tiles = null;
+
     /**
      * Construct a board from an N-by-N array of blocks (where
      * blocks[i][j] = block in row i, column j).
@@ -19,18 +24,33 @@ public class Board
      */
     public Board(int[][] blocks)
     {
-        // TODO: implement this
+        N = blocks.length;
+
+        if (N < 2 || N >= 128)
+        {
+            throw new IndexOutOfBoundsException("size not supported : " + N);
+        }
+
+        this.tiles = new byte[N][N];
+
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < N; j++)
+            {
+                tiles[i][j] = (byte) blocks[i][j];
+            }
+        }
+
     }
 
     /**
      * Board dimension N
      *
-     * @return
+     * @return  the dimension of the board
      */
     public int dimension()
     {
-        // TODO: implement this
-        return 1;
+        return N;
     }
 
     /**
@@ -103,7 +123,20 @@ public class Board
         if (y.getClass() != this.getClass()) return false;
 
         Board that = (Board) y;
-        return true; // (this.month == that.month) && (this.day == that.day) && (this.year == that.year);
+        if (this.dimension() != that.dimension()) return false;
+
+        for (int i = 0; i < N; ++i)
+        {
+            for (int j = 0; j < N; ++j)
+            {
+                if (this.tiles[i][j] != that.tiles[i][j])
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -126,12 +159,14 @@ public class Board
         // TODO: implement this
         StringBuilder s = new StringBuilder();
         s.append(N + "\n");
+
         for (int i = 0; i < N; i++)
         {
             for (int j = 0; j < N; j++)
             {
                 s.append(String.format("%2d ", tiles[i][j]));
             }
+
             s.append("\n");
         }
 
