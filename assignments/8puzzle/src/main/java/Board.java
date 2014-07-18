@@ -103,10 +103,45 @@ public class Board
     public Board twin()
     {
         // TODO: implement this
-        int[][] blocks = new int[5][10];
 
-        return new Board(blocks);
+        int[][] newTiles = copyArray();
+
+        for (int i = 0; i < dimension(); i++)
+        {
+            if (newTiles[i][0] == 0 || newTiles[i][1] == 0)
+            {
+                continue;
+            }
+
+            newTiles[i][0] = this.tiles[i][1];
+            newTiles[i][1] = this.tiles[i][0];
+
+            break;
+        }
+
+        return new Board(newTiles);
     }
+
+    /**
+     * Copy a two dimensional array of bytes.
+     *
+     * @return  a copy of the tiles array
+     */
+    private int[][] copyArray()
+    {
+        int[][] result = new int[N][];
+
+        for (int i = 0; i < N; i++)
+        {
+            assert tiles[i].length == N;
+            result[i] = new int[tiles[i].length];
+
+            System.arraycopy(tiles[i], 0, result[i], 0, tiles[i].length);
+        }
+
+        return result;
+    }
+
 
     /**
      * Does this board equal y?
@@ -117,7 +152,6 @@ public class Board
      */
     public boolean equals(Object y)
     {
-        // TODO: implement this
         if (y == this) return true;
         if (y == null) return false;
         if (y.getClass() != this.getClass()) return false;
@@ -156,7 +190,6 @@ public class Board
      */
     public String toString()
     {
-        // TODO: implement this
         StringBuilder s = new StringBuilder();
         s.append(N + "\n");
 
