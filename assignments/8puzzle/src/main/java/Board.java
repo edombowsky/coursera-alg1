@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.NavigableMap;
 
 /*************************************************************************
  * Name: Earl Dombowsky
@@ -62,8 +63,10 @@ public class Board
     {
         int hamming = 0;
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < N; j++)
+            {
                 if (tiles[i][j] == 0) continue;
                 if (tiles[i][j] != (N * i + j + 1)) hamming++;
             }
@@ -79,8 +82,22 @@ public class Board
      */
     public int manhattan()
     {
-        // TODO: implement this
-        return 0;
+        int manhattan = 0;
+
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < N; j++)
+            {
+                if (tiles[i][j] == 0) continue;
+
+                int row = (tiles[i][j] - 1) / N;
+                int col = (tiles[i][j] - 1) % N;
+
+                manhattan += (Math.abs(i - row) + Math.abs(j - col));
+            }
+        }
+
+        return manhattan;
     }
 
     /**
@@ -90,8 +107,7 @@ public class Board
      */
     public boolean isGoal()
     {
-        // TODO: implement this
-        return true;
+        return (hamming() == 0);
     }
 
     /**

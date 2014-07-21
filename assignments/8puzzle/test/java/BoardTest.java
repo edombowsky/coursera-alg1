@@ -69,11 +69,47 @@ public class BoardTest
     @Test
     public void hamming()
     {
-        int[][] tiles1 = new int [][] { { 8, 1, 3}, { 4, 0, 2}, {7, 6, 5} };
-        Board board1 = new Board(tiles1);
+        int[][] tiles = new int [][] { { 8, 1, 3}, { 4, 0, 2}, {7, 6, 5} };
+        Board board   = new Board(tiles);
 
         int expected = 5;
-        int actual   = board1.hamming();
+        int actual   = board.hamming();
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void manhattan()
+    {
+        int[][] tiles = new int [][] { { 8, 1, 3}, { 4, 0, 2}, {7, 6, 5} };
+        Board board  = new Board(tiles);
+
+        int expected = 10;
+        int actual   = board.manhattan();
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void isNotGoalBoard()
+    {
+        int[][] tiles1 = new int [][] { { 8, 1, 3}, { 4, 0, 2}, {7, 6, 5} };
+        Board board = new Board(tiles1);
+
+        boolean expected = false;
+        boolean actual   = board.isGoal();
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void isGoalBoard()
+    {
+        int[][] tiles1 = new int [][] { { 1, 2, 3}, { 4, 5, 6}, {7, 8, 0} };
+        Board board = new Board(tiles1);
+
+        boolean expected = true;
+        boolean actual   = board.isGoal();
 
         assertThat(actual, is(expected));
     }
