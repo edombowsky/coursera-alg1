@@ -60,8 +60,16 @@ public class Board
      */
     public int hamming()
     {
-        // TODO: implement this
-        return 0;
+        int hamming = 0;
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (tiles[i][j] == 0) continue;
+                if (tiles[i][j] != (N * i + j + 1)) hamming++;
+            }
+        }
+
+        return hamming;
     }
 
     /**

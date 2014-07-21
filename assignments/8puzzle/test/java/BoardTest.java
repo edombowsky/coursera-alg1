@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 public class BoardTest
@@ -65,4 +66,15 @@ public class BoardTest
         assertFalse("board1 is not equal to board2", board1.equals(board2));
     }
 
+    @Test
+    public void hamming()
+    {
+        int[][] tiles1 = new int [][] { { 8, 1, 3}, { 4, 0, 2}, {7, 6, 5} };
+        Board board1 = new Board(tiles1);
+
+        int expected = 5;
+        int actual   = board1.hamming();
+
+        assertThat(actual, is(expected));
+    }
 }
