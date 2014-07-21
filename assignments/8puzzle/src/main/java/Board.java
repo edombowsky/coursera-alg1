@@ -55,7 +55,15 @@ public class Board
     }
 
     /**
-     * Number of blocks out of place
+     * Number of blocks out of place.
+     *
+     * For example, the Hamming priorities of the initial search node below is 5.
+     *
+     * 8  1  3      1  2  3     1  2  3  4  5  6  7  8     1  2  3  4  5  6  7  8
+     * 4     2      4  5  6     ----------------------     ----------------------
+     * 7  6  5      7  8  1     1  0  0  1  1  0  1  1     2  0  0  2  2  0  3
+     *
+     * initial       goal           Hamming = 5 + 0          Manhattan = 10 + 0
      *
      * @return
      */
@@ -78,6 +86,14 @@ public class Board
     /**
      * Sum of Manhattan distances between blocks and goal
      *
+     * For example, the Manhattan priorities of the initial search node below is 10.
+     *
+     * 8  1  3      1  2  3     1  2  3  4  5  6  7  8
+     * 4     2      4  5  6     ----------------------
+     * 7  6  5      7  8  1     1  2  0  0  2  2  0  3
+     *
+     * initial       goal         Manhattan = 10 + 0
+
      * @return
      */
     public int manhattan()
@@ -198,14 +214,61 @@ public class Board
     }
 
     /**
-     * All neighboring boards
+     * All neighbouring boards
      *
      * @return
      */
-//    public Iterable<Board> neighbors()
-//    {
-//        // TODO: implement this
-//    }
+    public Iterable<Board> neighbors()
+    {
+        int i = 0, j = 0;
+        Queue<Board> pq = new Queue<Board>();
+
+        for (i = 0; i < dimension(); i++)
+        {
+            for (j = 0; j < dimension(); j++)
+            {
+                if (this.tiles[i][j] == 0) break;
+            }
+        }
+
+        // swap up
+        if (i > 0)
+        {
+            int[][] newblocks = copyArray();
+            newblocks[i - 1][j] = this.tiles[i][j];
+            newblocks[i][j] = this.tiles[i - 1][j];
+            pq.enqueue(new Board(newblocks));
+        }
+
+        // swap down
+        if (i < this.dimension() - 1)
+        {
+            int[][] newblocks = copyArray();
+            newblocks[i + 1][j] = this.tiles[i][j];
+            newblocks[i][j] = this.tiles[i + 1][j];
+            pq.enqueue(new Board(newblocks));
+        }
+
+        // swap left
+        if (j > 0)
+        {
+            int[][] newblocks = copyArray();
+            newblocks[i][j - 1] = this.tiles[i][j];
+            newblocks[i][j] = this.tiles[i][j - 1];
+            pq.enqueue(new Board(newblocks));
+        }
+
+        // swap right
+        if (j < this.dimension() - 1)
+        {
+            int[][] newblocks = copyArray();
+            newblocks[i][j + 1] = this.tiles[i][j];
+            newblocks[i][j] = this.tiles[i][j + 1];
+            pq.enqueue(new Board(newblocks));
+        }
+
+        return pq;
+    }
 
     /**
      * String representation of the board (in the output format specified below)
