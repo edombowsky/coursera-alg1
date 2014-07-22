@@ -35,10 +35,10 @@ public class Solver
      */
     private class Node implements Comparable<Node>
     {
-        public Board board;
-        public Node parent;
-        public int move;
-        public int priority;
+        private Board board;
+        private Node parent;
+        private int move;
+        private int priority;
 
         public Node(Board b, Node p, int m)
         {
@@ -62,17 +62,24 @@ public class Solver
         public int compare(Node v, Node w)
         {
             if (v.priority < w.priority)
+            {
                 return -1;
+            }
             else if (v.priority > w.priority)
+            {
                 return 1;
+            }
             else
+            {
                 return 0;
+            }
         }
     }
 
     /**
-     * Find a solution to the initial board (using the A* algorithm)
-     * @param initial
+     * Find a solution to the initial board (using the A* algorithm).
+     *
+     * @param initial  the puzzle board to solve
      */
     public Solver(Board initial)
     {
@@ -113,7 +120,7 @@ public class Solver
     /**
      * Is the initial board solvable?
      *
-     * @return
+     * @return  true if the puzzle board is solvable, false otherwise
      */
     public boolean isSolvable()
     {
@@ -123,7 +130,7 @@ public class Solver
     /**
      * Min number of moves to solve initial board; -1 if no solution
      *
-     * @return
+     * @return  number of moves to solve puzzle board, -1 if there is no solution
      */
     public int moves()
     {

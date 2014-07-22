@@ -18,7 +18,8 @@ public class Board
      * Construct a board from an N-by-N array of blocks (where
      * blocks[i][j] = block in row i, column j).
      *
-     * @param blocks
+     * @param blocks  a two dimensional integer array representing the puzzle
+     *                board
      */
     public Board(int[][] blocks)
     {
@@ -44,6 +45,7 @@ public class Board
     private Board(byte[][] blocks)
     {
         this.tiles = copySquareArray(blocks);
+
         N = tiles.length;
     }
 
@@ -69,7 +71,7 @@ public class Board
      *
      * initial       goal           Hamming = 5 + 0          Manhattan = 10 + 0
      *
-     * @return
+     * @return  the hamming priority
      */
     public int hamming()
     {
@@ -98,7 +100,7 @@ public class Board
      *
      * initial       goal         Manhattan = 10 + 0
 
-     * @return
+     * @return  the manhattan distance
      */
     public int manhattan()
     {
@@ -123,7 +125,7 @@ public class Board
     /**
      * Is this board the goal board?
      *
-     * @return
+     * @return  true if the puzzle has been solved, otherwise false
      */
     public boolean isGoal()
     {
@@ -142,7 +144,7 @@ public class Board
      *
      *   board      twin       twin       twin       twin       twin
      *
-     * @return
+     * @return  a twin of the current puzzle board
      */
     public Board twin()
     {
@@ -158,7 +160,7 @@ public class Board
         byte value = 0;
         byte lastValue = tiles[0][0];
 
-        // TODO: fix this up
+        // TODO: remove the labels one day
         zerosearch:
         for (row = 0; row < N; row++)
         {
@@ -260,14 +262,15 @@ public class Board
     }
 
     /**
+     * Swap a row on the puzzle board.
      *
-     * @param array
-     * @param fromRow
-     * @param fromCol
-     * @param toRow
-     * @param toCol
+     * @param array     board that is to have a row or column swapped
+     * @param fromRow   starting row
+     * @param fromCol   starting column
+     * @param toRow     ending row
+     * @param toCol     ending column
      *
-     * @return
+     * @return  board after the swap has been made
      */
     private byte[][] swap(byte[][] array,
                           int fromRow,
@@ -297,6 +300,7 @@ public class Board
         int row = 0;
         int col = 0;
 
+        // TODO: remove the labels one day
         zerosearch:
         for (row = 0; row < N; row++)
         {
@@ -325,7 +329,7 @@ public class Board
     /**
      * String representation of the board (in the output format specified below)
      *
-     * @return
+     * @return  string representation of the puzzle board
      */
     public String toString()
     {

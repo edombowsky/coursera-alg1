@@ -158,19 +158,20 @@ public class BoardTest
         assertThat(actual, is(expected));
     }
 
-    @Ignore
+    @Test
     public void testIteratorInOrder()
     {
-        int[][] tiles = new int [][] { { 8, 1, 3}, { 4, 0, 2}, {7, 6, 5} };
+        int[][] tiles = new int [][] { { 1, 2, 3}, { 4, 5, 6}, {7, 8, 0} };
         Board board = new Board(tiles);
+
 
         for (Board neighbor : board.neighbors())
         {
             assertFalse(board.equals(neighbor));
             assertFalse(neighbor.isGoal());
             assertEquals(3, neighbor.dimension());
-            assertEquals(5, neighbor.hamming());
-            assertEquals(11, neighbor.manhattan());
+            assertEquals(1, neighbor.hamming());
+            assertEquals(1, neighbor.manhattan());
         }
     }
 
@@ -198,4 +199,33 @@ public class BoardTest
         assertThat(actual, is(expected));
     }
 
+    int N = 3;
+    private int[][] make_blocks(int[] vals, boolean shuffle)
+    {
+        if (vals == null)
+        {
+            vals = new int[N*N];
+            for (int i = 0; i < vals.length; i++)
+            {
+                vals[i] = (i == vals.length - 1) ? 0 : i + 1;
+            }
+        }
+        else if (vals.length != N*N)
+        {
+            throw new IllegalArgumentException("Need " + N*N + " values");
+        }
+
+        if (shuffle) StdRandom.shuffle(vals);
+
+        int[][] blocks = new int[N][N];
+        for (int i = 0, k = 0; i < N; i++)
+        {
+            for (int j = 0; j < N; j++, k++)
+            {
+                blocks[i][j] = vals[k];
+            }
+        }
+
+        return blocks;
+    }
 }
