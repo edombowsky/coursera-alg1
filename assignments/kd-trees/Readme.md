@@ -23,21 +23,21 @@ public class Point2D implements Comparable<Point2D> {
 Use the immutable data type RectHV.java (not part of algs4.jar) for axis-aligned rectangles. Here is the subset of its API that you may use:
 
 ```Java
-    public class RectHV {
-       public RectHV(double xmin, double ymin,         // construct the rectangle [xmin, xmax] x [ymin, ymax]
-                     double xmax, double ymax)         // throw a java.lang.IllegalArgumentException if (xmin > xmax) or (ymin > ymax)
-       public double xmin()                            // minimum x-coordinate of rectangle
-       public double ymin()                            // minimum y-coordinate of rectangle
-       public double xmax()                            // maximum x-coordinate of rectangle
-       public double ymax()                            // maximum y-coordinate of rectangle
-       public boolean contains(Point2D p)              // does this rectangle contain the point p (either inside or on boundary)?
-       public boolean intersects(RectHV that)          // does this rectangle intersect that rectangle (at one or more points)?
-       public double distanceTo(Point2D p)             // Euclidean distance from point p to the closest point in rectangle
-       public double distanceSquaredTo(Point2D p)      // square of Euclidean distance from point p to closest point in rectangle
-       public boolean equals(Object that)              // does this rectangle equal that?
-       public void draw()                              // draw to standard draw
-       public String toString()                        // string representation
-    }
+public class RectHV {
+   public RectHV(double xmin, double ymin,         // construct the rectangle [xmin, xmax] x [ymin, ymax]
+                 double xmax, double ymax)         // throw a java.lang.IllegalArgumentException if (xmin > xmax) or (ymin > ymax)
+   public double xmin()                            // minimum x-coordinate of rectangle
+   public double ymin()                            // minimum y-coordinate of rectangle
+   public double xmax()                            // maximum x-coordinate of rectangle
+   public double ymax()                            // maximum y-coordinate of rectangle
+   public boolean contains(Point2D p)              // does this rectangle contain the point p (either inside or on boundary)?
+   public boolean intersects(RectHV that)          // does this rectangle intersect that rectangle (at one or more points)?
+   public double distanceTo(Point2D p)             // Euclidean distance from point p to the closest point in rectangle
+   public double distanceSquaredTo(Point2D p)      // square of Euclidean distance from point p to closest point in rectangle
+   public boolean equals(Object that)              // does this rectangle equal that?
+   public void draw()                              // draw to standard draw
+   public String toString()                        // string representation
+}
 ```
 
 Do not modify these data types.
@@ -45,16 +45,16 @@ Do not modify these data types.
 Brute-force implementation. Write a mutable data type PointSET.java that represents a set of points in the unit square. Implement the following API by using a red-black BST (using either SET from algs4.jar or java.util.TreeSet).
 
 ```Java
-    public class PointSET {
-       public PointSET()                               // construct an empty set of points
-       public boolean isEmpty()                        // is the set empty?
-       public int size()                               // number of points in the set
-       public void insert(Point2D p)                   // add the point p to the set (if it is not already in the set)
-       public boolean contains(Point2D p)              // does the set contain the point p?
-       public void draw()                              // draw all of the points to standard draw
-       public Iterable<Point2D> range(RectHV rect)     // all points in the set that are inside the rectangle
-       public Point2D nearest(Point2D p)               // a nearest neighbor in the set to p; null if set is empty
-    }
+public class PointSET {
+   public PointSET()                               // construct an empty set of points
+   public boolean isEmpty()                        // is the set empty?
+   public int size()                               // number of points in the set
+   public void insert(Point2D p)                   // add the point p to the set (if it is not already in the set)
+   public boolean contains(Point2D p)              // does the set contain the point p?
+   public void draw()                              // draw all of the points to standard draw
+   public Iterable<Point2D> range(RectHV rect)     // all points in the set that are inside the rectangle
+   public Point2D nearest(Point2D p)               // a nearest neighbor in the set to p; null if set is empty
+}
 ```
 
 Your implementation should support insert() and contains() in time proportional to the logarithm of the number of points in the set in the worst case; it should support nearest() and range() in time proportional to the number of points in the set.
