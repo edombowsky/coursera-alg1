@@ -1,3 +1,4 @@
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -5,6 +6,13 @@ import static org.junit.Assert.*;
 
 public class BoardTest
 {
+//    @Test(expected= IllegalArgumentException.class)
+//    public void testBoardNotSquare()
+//    {
+//        int[][] x = new int[3][2];
+//        new Board(x);
+//    }
+
     @Test
     public void testToString()
     {
@@ -43,7 +51,17 @@ public class BoardTest
     }
 
     @Test
-    public void eaualBoards()
+    public void testDimension()
+    {
+        Board b = new Board(new int[2][2]);
+        assertThat(b.dimension(), is(2));
+
+        b = new Board(new int[127][127]);
+        assertThat(b.dimension(), is(127));
+    }
+
+    @Test
+    public void equalBoards()
     {
         int[][] tiles1 = new int [][] { { 0, 1, 3}, { 0, 1, 3} };
         int[][] tiles2 = new int [][] { { 0, 1, 3}, { 0, 1, 3} };
@@ -93,24 +111,91 @@ public class BoardTest
     @Test
     public void isNotGoalBoard()
     {
-        int[][] tiles1 = new int [][] { { 8, 1, 3}, { 4, 0, 2}, {7, 6, 5} };
-        Board board = new Board(tiles1);
+        int[][] tiles = new int [][] { { 8, 1, 3}, { 4, 0, 2}, {7, 6, 5} };
+        Board board = new Board(tiles);
 
         boolean expected = false;
         boolean actual   = board.isGoal();
 
         assertThat(actual, is(expected));
+
+//        StdOut.println(board.twin().toString());
     }
 
     @Test
     public void isGoalBoard()
     {
-        int[][] tiles1 = new int [][] { { 1, 2, 3}, { 4, 5, 6}, {7, 8, 0} };
-        Board board = new Board(tiles1);
+        int[][] tiles = new int [][] { { 1, 2, 3}, { 4, 5, 6}, {7, 8, 0} };
+        Board board = new Board(tiles);
 
         boolean expected = true;
         boolean actual   = board.isGoal();
 
         assertThat(actual, is(expected));
     }
+
+    @Test
+    public void testTwinEqualsTwin()
+    {
+        int[][] tiles = new int [][] { { 1, 2, 3}, { 4, 5, 6}, {7, 8, 0} };
+        Board board = new Board(tiles);
+
+        boolean expected = true;
+        boolean actual = board.twin().equals(board.twin());
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void testTwinNotEqualsBoard()
+    {
+        int[][] tiles = new int [][] { { 1, 2, 3}, { 4, 5, 6}, {7, 8, 0} };
+        Board board = new Board(tiles);
+
+        boolean expected = false;
+        boolean actual = board.equals(board.twin());
+
+        assertThat(actual, is(expected));
+    }
+
+    @Ignore
+    public void testIteratorInOrder()
+    {
+        int[][] tiles = new int [][] { { 8, 1, 3}, { 4, 0, 2}, {7, 6, 5} };
+        Board board = new Board(tiles);
+
+        for (Board neighbor : board.neighbors())
+        {
+            assertFalse(board.equals(neighbor));
+            assertFalse(neighbor.isGoal());
+            assertEquals(3, neighbor.dimension());
+            assertEquals(5, neighbor.hamming());
+            assertEquals(11, neighbor.manhattan());
+        }
+    }
+
+    @Test
+    public void test_manhattan_out_of_order_puzzle04()
+    {
+        int[][] x = new int[][]{{0, 1, 3}, {4, 2, 5}, {7, 8, 6}};
+        Board b = new Board(x);
+
+        int expected = 4;
+        int actual = b.manhattan();
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void testManhattanOutOfOrderPuzzle05()
+    {
+        int[][] x = new int[][]{ {4, 1, 3}, {0, 2, 6}, {7, 5, 8}};
+        Board b = new Board(x);
+
+        int expected = 5;
+        int actual = b.manhattan();
+
+        assertThat(actual, is(expected));
+    }
+
 }

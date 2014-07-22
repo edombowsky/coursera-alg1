@@ -1,6 +1,3 @@
-import java.util.Arrays;
-import java.util.NavigableMap;
-
 /*************************************************************************
  * Name: Earl Dombowsky
  * Email:
@@ -14,8 +11,8 @@ import java.util.NavigableMap;
 
 public class Board
 {
-    private int N;
-    private byte[][] tiles = null;
+    private int N;                  // Dimensions of puzzle board
+    private byte[][] tiles = null;  // Puzzle board
 
     /**
      * Construct a board from an N-by-N array of blocks (where
@@ -43,6 +40,13 @@ public class Board
         }
 
     }
+
+    private Board(byte[][] blocks)
+    {
+        this.tiles = copySquareArray(blocks);
+        N = tiles.length;
+    }
+
 
     /**
      * Board dimension N
@@ -142,44 +146,86 @@ public class Board
      */
     public Board twin()
     {
-        // TODO: implement this
+        byte[][] copy = copySquareArray(tiles);
 
-        int[][] newTiles = copyArray();
+        if (N <= 1) return new Board(copy);
 
-        for (int i = 0; i < dimension(); i++)
+        // Find zero so that we don't exchange with the blank.
+        // This looks like a O(dim^2) algorithm, but on average it should finish
+        // in O(1).
+        int row = 0;
+        int col = 0;
+        byte value = 0;
+        byte lastValue = tiles[0][0];
+
+        // TODO: fix this up
+        zerosearch:
+        for (row = 0; row < N; row++)
         {
-            if (newTiles[i][0] == 0 || newTiles[i][1] == 0)
+            for (col = 0; col < N; col++)
             {
-                continue;
+                value = tiles[row][col];
+                // Check col>0 because swap must occur on same row
+                if (value != 0 && lastValue != 0 && col > 0) break zerosearch;
+                lastValue = value;
             }
-
-            newTiles[i][0] = this.tiles[i][1];
-            newTiles[i][1] = this.tiles[i][0];
-
-            break;
         }
 
-        return new Board(newTiles);
+        copy[row][col]     = lastValue;
+        copy[row][col - 1] = value;
+
+        return new Board(copy);
     }
 
     /**
      * Copy a two dimensional array of bytes.
      *
-     * @return  a copy of the tiles array
+     * @param original  array to be copied
+     *
+     * @return  the duplicated array
      */
-    private int[][] copyArray()
+    private byte[][] copySquareArray(int[][] original)
     {
-        int[][] result = new int[N][];
+        int len = original.length;
+        byte[][] copy = new byte[len][len];
 
-        for (int i = 0; i < N; i++)
+        for (int row = 0; row < len; row++)
         {
-            assert tiles[i].length == N;
-            result[i] = new int[tiles[i].length];
+            assert original[row].length == len;
 
-            System.arraycopy(tiles[i], 0, result[i], 0, tiles[i].length);
+            for (int col = 0; col < len; col++)
+            {
+                // Assignment guarantees dim < 128, so casting is safe.
+                copy[row][col] = (byte) original[row][col];
+            }
         }
 
-        return result;
+        return copy;
+    }
+
+    /**
+     * Copy a two dimensional array of bytes.
+     *
+     * @param original  array to be copied
+     *
+     * @return  the duplicated array
+     */
+    private byte[][] copySquareArray(byte[][] original)
+    {
+        int len = original.length;
+        byte[][] copy = new byte[len][len];
+
+        for (int row = 0; row < len; row++)
+        {
+            assert original[row].length == len;
+
+            for (int col = 0; col < len; col++)
+            {
+                copy[row][col] = original[row][col];
+            }
+        }
+
+        return copy;
     }
 
 
@@ -214,60 +260,66 @@ public class Board
     }
 
     /**
+     *
+     * @param array
+     * @param fromRow
+     * @param fromCol
+     * @param toRow
+     * @param toCol
+     *
+     * @return
+     */
+    private byte[][] swap(byte[][] array,
+                          int fromRow,
+                          int fromCol,
+                          int toRow,
+                          int toCol)
+    {
+        byte[][] copy = copySquareArray(array);
+        byte tmp      = copy[toRow][toCol];
+
+        copy[toRow][toCol] = copy[fromRow][fromCol];
+        copy[fromRow][fromCol] = tmp;
+
+        return copy;
+    }
+
+    /**
      * All neighbouring boards
      *
      * @return
      */
     public Iterable<Board> neighbors()
     {
-        int i = 0, j = 0;
-        Queue<Board> pq = new Queue<Board>();
+        Queue<Board> q = new Queue<Board>();
 
-        for (i = 0; i < dimension(); i++)
+        // Find zero
+        int row = 0;
+        int col = 0;
+
+        zerosearch:
+        for (row = 0; row < N; row++)
         {
-            for (j = 0; j < dimension(); j++)
+            for (col = 0; col < N; col++)
             {
-                if (this.tiles[i][j] == 0) break;
+                if (tiles[row][col] == 0) break zerosearch;
             }
         }
 
         // swap up
-        if (i > 0)
-        {
-            int[][] newblocks = copyArray();
-            newblocks[i - 1][j] = this.tiles[i][j];
-            newblocks[i][j] = this.tiles[i - 1][j];
-            pq.enqueue(new Board(newblocks));
-        }
+        if (row > 0) q.enqueue(new Board(swap(tiles, row, col, row - 1, col)));
 
         // swap down
-        if (i < this.dimension() - 1)
-        {
-            int[][] newblocks = copyArray();
-            newblocks[i + 1][j] = this.tiles[i][j];
-            newblocks[i][j] = this.tiles[i + 1][j];
-            pq.enqueue(new Board(newblocks));
-        }
+        if (row < N - 1)
+            q.enqueue(new Board(swap(tiles, row, col, row + 1, col)));
 
         // swap left
-        if (j > 0)
-        {
-            int[][] newblocks = copyArray();
-            newblocks[i][j - 1] = this.tiles[i][j];
-            newblocks[i][j] = this.tiles[i][j - 1];
-            pq.enqueue(new Board(newblocks));
-        }
+        if (col > 0) q.enqueue(new Board(swap(tiles, row, col, row, col - 1)));
 
         // swap right
-        if (j < this.dimension() - 1)
-        {
-            int[][] newblocks = copyArray();
-            newblocks[i][j + 1] = this.tiles[i][j];
-            newblocks[i][j] = this.tiles[i][j + 1];
-            pq.enqueue(new Board(newblocks));
-        }
+        if (col < N - 1) q.enqueue(new Board(swap(tiles, row, col, row, col + 1)));
 
-        return pq;
+        return q;
     }
 
     /**

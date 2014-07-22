@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.Comparator;
 
 /*************************************************************************
  * Name: Earl Dombowsky
@@ -13,13 +13,101 @@ import java.util.Arrays;
 
 public class Solver
 {
+    private static final Comparator<Node> MANHATTAN = new ManhattanOrder();
+
+    // priority queue to save all the possible options
+    private MinPQ<Node> pq = new MinPQ<Node>(MANHATTAN);
+
+    // priority queue for the twin board
+    private MinPQ<Node> pq2 = new MinPQ<Node>(MANHATTAN);
+
+    // Current search node
+    private Node cur;
+
+    // Current search node of twin board
+    private Node cur2;
+
+    // Solvable?
+    private boolean solvable;
+
+    /**
+     * Search nodes for each step
+     */
+    private class Node implements Comparable<Node>
+    {
+        public Board board;
+        public Node parent;
+        public int move;
+        public int priority;
+
+        public Node(Board b, Node p, int m)
+        {
+            board = b;
+            parent = p;
+            move = m;
+            priority = b.manhattan() + m;
+        }
+
+        public int compareTo(Node other)
+        {
+            if (this.priority < other.priority) return -1;
+            if (this.priority > other.priority) return 1;
+
+            return 0;
+        }
+    }
+
+    private static class ManhattanOrder implements Comparator<Node>
+    {
+        public int compare(Node v, Node w)
+        {
+            if (v.priority < w.priority)
+                return -1;
+            else if (v.priority > w.priority)
+                return 1;
+            else
+                return 0;
+        }
+    }
+
     /**
      * Find a solution to the initial board (using the A* algorithm)
      * @param initial
      */
     public Solver(Board initial)
     {
-        // TODO: implement this
+        cur  = new Node(initial, null, 0);
+        cur2 = new Node(initial.twin(), null, 0);
+
+        pq.insert(cur);
+        pq2.insert(cur2);
+
+        while (!cur.board.isGoal() && !cur2.board.isGoal())
+        {
+            cur = pq.delMin();
+            cur2 = pq2.delMin();
+
+            for (Board i: cur.board.neighbors())
+            {
+                if (cur.parent == null || !i.equals(cur.parent.board))
+                {
+                    pq.insert(new Node(i, cur, cur.move+1));
+                }
+            }
+
+            for (Board i: cur2.board.neighbors())
+            {
+                if (cur2.parent == null || !i.equals(cur2.parent.board))
+                {
+                    pq2.insert(new Node(i, cur2, cur2.move+1));
+                }
+            }
+        }
+
+        if (cur.board.isGoal())
+            solvable = true;
+        else
+            solvable = false;
     }
 
     /**
@@ -29,8 +117,7 @@ public class Solver
      */
     public boolean isSolvable()
     {
-        // TODO: implement this
-        return true;
+        return solvable;
     }
 
     /**
@@ -40,8 +127,9 @@ public class Solver
      */
     public int moves()
     {
-        // TODO: implement this
-        return 0;
+        if (solvable) return cur.move;
+
+        return -1;
     }
 
     /**
@@ -49,10 +137,21 @@ public class Solver
      *
      * @return
      */
-//    public Iterable<Board> solution()
-//    {
-//        // TODO: implement this
-//    }
+    public Iterable<Board> solution()
+    {
+        if (!solvable) return null;
+
+        Stack<Board> q = new Stack<Board>();
+        Node i = cur;
+
+        while (i != null)
+        {
+            q.push(i.board);
+            i = i.parent;
+        }
+
+        return q;
+    }
 
     public static void main(String[] args)
     {
@@ -95,10 +194,10 @@ public class Solver
         else
         {
             StdOut.println("Minimum number of moves = " + solver.moves());
-//            for (Board board : solver.solution())
-//            {
-//                StdOut.println(board);
-//            }
+            for (Board board : solver.solution())
+            {
+                StdOut.println(board);
+            }
         }
     }
 }
