@@ -1,4 +1,3 @@
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;

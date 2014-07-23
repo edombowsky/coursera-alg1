@@ -20,7 +20,6 @@ public class RangeSearchVisualizer
         String filename = args[0];
         In in = new In(filename);
 
-
         StdDraw.show(0);
 
         // initialize the data structures with N points from standard input

@@ -17,12 +17,14 @@
 
 public class PointSET
 {
+    SET<Point2D> tree;
+
     /**
      * Construct an empty set of points
      */
     public PointSET()
     {
-
+        tree = new SET<Point2D>();
     }
 
     /**
@@ -32,7 +34,7 @@ public class PointSET
      */
     public boolean isEmpty()
     {
-
+        return tree.isEmpty();
     }
 
     /**
@@ -42,7 +44,7 @@ public class PointSET
      */
     public int size()
     {
-
+        return tree.size();
     }
 
     /**
@@ -63,7 +65,8 @@ public class PointSET
      */
     public boolean contains(Point2D p)
     {
-
+        // TODO: implement this
+        return true;
     }
 
     /**
@@ -82,7 +85,8 @@ public class PointSET
      */
     public Iterable<Point2D> range(RectHV rect)
     {
-
+        // TODO: implement this
+        return null;
     }
 
     /**
@@ -93,6 +97,7 @@ public class PointSET
      */
     public Point2D nearest(Point2D p)
     {
-
+        // TODO: implement this
+        return null;
     }
 }

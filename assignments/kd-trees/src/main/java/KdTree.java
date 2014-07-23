@@ -1,7 +1,3 @@
-/**
- * Created by CAEADOM on 7/22/2014.
- */
-
 /*************************************************************************
  * Name: Earl Dombowsky
  * Email:
@@ -26,12 +22,36 @@
 
 public class KdTree
 {
+    private static class Node
+    {
+        private Point2D p;
+        private RectHV rect;
+        private Node lb;
+        private Node rt;
+        private String name;
+        private static int id = 0;
+
+        public Node(Point2D p, RectHV rect, Node lb, Node rt)
+        {
+            this.p = p;
+            this.rect = rect;
+            this.lb = lb;
+            this.rt = rt;
+            this.name = String.valueOf(id++);
+        }
+
+    }
+
+    private Node root;
+    private int size;
+
     /**
      * Construct an empty kd-tree
      */
     public KdTree()
     {
-
+        root = null;
+        size = 0;
     }
 
     /**
@@ -41,7 +61,7 @@ public class KdTree
      */
     public boolean isEmpty()
     {
-
+        return size == 0;
     }
 
     /**
@@ -51,7 +71,7 @@ public class KdTree
      */
     public int size()
     {
-
+        return size;
     }
 
     /**
@@ -72,7 +92,8 @@ public class KdTree
      */
     public boolean contains(Point2D p)
     {
-
+        // TODO: implement this
+        return true;
     }
 
     /**
@@ -91,7 +112,8 @@ public class KdTree
      */
     public Iterable<Point2D> range(RectHV rect)
     {
-
+        // TODO: implement this
+        return null;
     }
 
     /**
@@ -102,6 +124,7 @@ public class KdTree
      */
     public Point2D nearest(Point2D p)
     {
-
+        // TODO: implement this
+        return null;
     }
 }
