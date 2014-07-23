@@ -17,56 +17,56 @@
 
 public class PointSET
 {
-    SET<Point2D> tree;
+    private SET<Point2D> pointSet;
 
     /**
      * Construct an empty set of points
      */
     public PointSET()
     {
-        tree = new SET<Point2D>();
+        pointSet = new SET<Point2D>();
     }
 
     /**
      * Is the set empty?
      *
-     * @return
+     * @return  true if the set is empty, false otherwise
      */
     public boolean isEmpty()
     {
-        return tree.isEmpty();
+        return pointSet.isEmpty();
     }
 
     /**
      * Number of points in the set
      *
-     * @return
+     * @return  the number of points in the set
      */
     public int size()
     {
-        return tree.size();
+        return pointSet.size();
     }
 
     /**
      * Add the point p to the set (if it is not already in the set).
      *
-     * @param p
+     * @param p  point to be added to the set
      */
     public void insert(Point2D p)
     {
-
+        pointSet.add(p);
     }
 
     /**
      * Does the set contain the point p?
      *
-     * @param p
-     * @return
+     * @param p  point to be check that it is in the set
+     *
+     * @return  true if point is in the set, false otherwise
      */
     public boolean contains(Point2D p)
     {
-        // TODO: implement this
-        return true;
+        return pointSet.contains(p);
     }
 
     /**
@@ -74,7 +74,10 @@ public class PointSET
      */
     public void draw()
     {
-
+        for (Point2D point: pointSet)
+        {
+            point.draw();
+        }
     }
 
     /**
@@ -90,14 +93,49 @@ public class PointSET
     }
 
     /**
-     * A nearest neighbor in the set to p; null if set is empty
+     * A nearest neighbour in the set to p; null if set is empty
      *
-     * @param p
-     * @return
+     * @param p  point to check for its nearest neighbour
+     *
+     * @return  the point nearest to the input parameter or null if set is empty
      */
     public Point2D nearest(Point2D p)
     {
         // TODO: implement this
+        if (pointSet.isEmpty()) return null;
+        
         return null;
+    }
+
+    public static void main(String [] args)
+    {
+        int N = Integer.parseInt(args[0]);
+        int xsize = Integer.parseInt(args[1]);
+        int ysize = Integer.parseInt(args[2]);
+
+        long seed = System.currentTimeMillis();
+        StdRandom.setSeed(seed);
+
+        PointSET pointSet = new PointSET();
+
+        for (int i = 0; i < N; i++)
+        {
+            pointSet.insert(new Point2D(StdRandom.uniform(xsize),
+                    StdRandom.uniform(ysize)));
+        }
+
+        StdDraw.setCanvasSize(xsize, ysize);
+        StdDraw.setXscale(0, xsize);
+        StdDraw.setYscale(0, ysize);
+        StdDraw.setPenRadius(0.01);
+        System.out.println(pointSet.size());
+        pointSet.draw();
+
+        Point2D o = new Point2D(50, 50);
+        Point2D n = pointSet.nearest(o);
+        StdDraw.setPenColor(StdDraw.GREEN);
+        n.draw();
+        StdDraw.setPenColor(StdDraw.RED);
+        o.draw();
     }
 }
