@@ -74,10 +74,10 @@ public class PointSETTest
         Iterator<Point2D> iter = set.range(rect).iterator();
 
         assertTrue(iter.hasNext());
-        assertEquals(new Point2D(0.4, 0.1), iter.next());
+        assertEquals(new Point2D(0.1, 0.1), iter.next());
 
         assertTrue(iter.hasNext());
-        assertEquals(new Point2D(0.1, 0.1), iter.next());
+        assertEquals(new Point2D(0.4, 0.1), iter.next());
 
         assertFalse(iter.hasNext());
     }
@@ -89,13 +89,13 @@ public class PointSETTest
         Iterator<Point2D> iter = set.range(rect).iterator();
 
         assertTrue(iter.hasNext());
-        assertEquals(new Point2D(0.4, 0.5), iter.next());
+        assertEquals(new Point2D(0.1, 0.1), iter.next());
 
         assertTrue(iter.hasNext());
         assertEquals(new Point2D(0.4, 0.1), iter.next());
 
         assertTrue(iter.hasNext());
-        assertEquals(new Point2D(0.1, 0.1), iter.next());
+        assertEquals(new Point2D(0.4, 0.5), iter.next());
 
         assertFalse(iter.hasNext());
     }

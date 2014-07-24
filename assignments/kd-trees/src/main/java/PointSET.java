@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 /*************************************************************************
  * Name: Earl Dombowsky
  * Email:
@@ -88,8 +90,14 @@ public class PointSET
      */
     public Iterable<Point2D> range(RectHV rect)
     {
-        // TODO: implement this
-        return null;
+        SET<Point2D> range = new SET<Point2D>();
+
+        for (Point2D p : pointSet)
+        {
+            if (rect.contains(p)) range.add(p);
+        }
+
+        return range;
     }
 
     /**
@@ -101,10 +109,24 @@ public class PointSET
      */
     public Point2D nearest(Point2D p)
     {
-        // TODO: implement this
         if (pointSet.isEmpty()) return null;
-        
-        return null;
+
+        Point2D result;
+        Iterator<Point2D> it = pointSet.iterator();
+        result = it.next();
+        double dist = p.distanceTo(result);
+
+        while (it.hasNext())
+        {
+            Point2D temp = it.next();
+            if (p.distanceTo(temp) < dist)
+            {
+                result = temp;
+                dist = p.distanceTo(temp);
+            }
+        }
+
+        return result;
     }
 
     public static void main(String [] args)
